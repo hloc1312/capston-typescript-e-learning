@@ -2,7 +2,19 @@ import React from "react";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import "./homeMenu.css";
 import { NavLink } from "react-router-dom";
-const HomeMenu = () => {
+import Card from "../../../components/Molecules/Card/Card";
+import { LayDanhSachKhoaHoc } from "../../../types/quanLyKhoaHocTypes";
+
+type ChilProps = React.HTMLAttributes<HTMLDivElement> & {
+  danhSachKhoaHoc?: LayDanhSachKhoaHoc[];
+};
+
+const HomeMenu: React.FC<ChilProps> = ({ danhSachKhoaHoc }) => {
+  const renderCardKhoaHoc = () => {
+    return danhSachKhoaHoc?.slice(0, 8)?.map((khoaHoc) => {
+      return <Card key={khoaHoc.maKhoaHoc} khoaHoc={khoaHoc} />;
+    });
+  };
   return (
     <div className="HomeMenu py-20 container mx-auto px-4">
       <div className="HomeMenu heading">
@@ -29,6 +41,9 @@ const HomeMenu = () => {
             </svg>
           </NavLink>
         </div>
+      </div>
+      <div className="HomeMenu Card">
+        <div className="flex flex-wrap">{renderCardKhoaHoc()}</div>
       </div>
     </div>
   );

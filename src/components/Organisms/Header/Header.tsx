@@ -4,9 +4,16 @@ import logo from "../../../assets/images/logo.png";
 import { DownOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Dropdown, Space } from "antd";
+import { useAppDispath } from "../../../store/configStore";
+import { layDanhSachKhoaHoc } from "../../../store/quanLyKhoaHoc/quanLyKhoaHocReducer";
 const Header = () => {
   const [scrollY, setScrollY] = useState(0);
-
+  const [search, setSearch] = useState("");
+  const dispatch = useAppDispath();
+  const handleSubmit = (e: React.FormEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    dispatch(layDanhSachKhoaHoc(search));
+  };
   const handleScrollY = () => {
     const scrollY = window.scrollY || document.documentElement.scrollTop;
     setScrollY(scrollY);
@@ -109,7 +116,12 @@ const Header = () => {
         </ul>
 
         <div className="flex items-center md:space-x-4">
-          <div className="relative">
+          <form
+            className="relative"
+            onSubmit={(e: any) => {
+              handleSubmit(e);
+            }}
+          >
             <span className="absolute inset-y-0 left-0 flex items-center pl-2">
               <button
                 type="submit"
@@ -126,12 +138,15 @@ const Header = () => {
               </button>
             </span>
             <input
+              onChange={(e) => {
+                setSearch(e.target.value);
+              }}
               type="search"
               name="Search"
               placeholder="Search..."
               className="w-32 pr-2 py-2 pl-10 text-sm rounded-md sm:w-auto focus:outline-none dark:bg-gray-800 dark:text-gray-100 focus:dark:bg-gray-900"
             />
-          </div>
+          </form>
           <button
             type="button"
             className="hidden px-6 py-2 font-semibold rounded lg:block dark:bg-violet-400 dark:text-gray-900 text-white bg-gradient-to-r from-yellow-500 via-yellow-500 to-yellow-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-yellow-300 dark:focus:ring-yellow-700  text-sm text-center "
