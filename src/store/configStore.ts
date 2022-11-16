@@ -1,11 +1,14 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
+import { quanLyKhoaHocReducer } from "./quanLyKhoaHoc/quanLyKhoaHocReducer";
 
-const rootReducers = combineReducers({});
+const rootReducers = combineReducers({
+  quanLyKhoaHocReducer,
+});
 
 export const store = configureStore({
   reducer: rootReducers,
-  middleware: (getDefaultMiddleware: any) => getDefaultMiddleware().concat(),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(),
   devTools: true,
 });
 

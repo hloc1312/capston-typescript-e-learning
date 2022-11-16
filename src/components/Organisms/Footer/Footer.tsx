@@ -1,7 +1,33 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import logo from "../../../assets/images/logo.png";
+import { RootState, useAppDispath } from "../../../store/configStore";
+import { layDanhMucKhoaHoc } from "../../../store/quanLyKhoaHoc/quanLyKhoaHocReducer";
 const Footer = () => {
+  const dispatch = useAppDispath();
+  const { danhMucKhoaHoc } = useSelector((state: RootState) => {
+    return state.quanLyKhoaHocReducer;
+  });
+
+  const renderDanhMuc = () => {
+    return danhMucKhoaHoc?.map((danhMuc) => {
+      return (
+        <li className="hover:text-yellow-500" key={danhMuc.maDanhMuc}>
+          <NavLink
+            className="text-white hover:text-yellow-500"
+            rel="noopener noreferrer"
+            to="/"
+          >
+            {danhMuc.tenDanhMuc}
+          </NavLink>
+        </li>
+      );
+    });
+  };
+  useEffect(() => {
+    dispatch(layDanhMucKhoaHoc());
+  }, []);
   return (
     <footer className="px-4 divide-y text-white bg-[#1E1E2A] dark:bg-gray-800 dark:text-gray-100">
       <div className="container flex flex-col justify-between py-10 mx-auto space-y-8 lg:flex-row lg:space-y-0">
@@ -19,17 +45,7 @@ const Footer = () => {
             <h3 className="tracking-wide uppercase dark:text-gray-50 text-white">
               Course List
             </h3>
-            <ul className="space-y-1">
-              <li className="hover:text-yellow-500">
-                <NavLink
-                  className="text-white hover:text-yellow-500"
-                  rel="noopener noreferrer"
-                  to="/"
-                >
-                  Features
-                </NavLink>
-              </li>
-            </ul>
+            <ul className="space-y-1">{renderDanhMuc()}</ul>
           </div>
           <div className="space-y-4">
             <h3 className="uppercase dark:text-gray-50 text-white">Address</h3>

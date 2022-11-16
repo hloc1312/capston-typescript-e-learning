@@ -1,0 +1,50 @@
+.card {
+  box-shadow: 0 1px 2px 0px rgb(0 0 0 / 10%);
+  transition: all 0.1s cubic-bezier(0.4, 0, 0.6, 1);
+  user-select: none;
+  position: relative;
+  /* border-top-left-radius: 8px;
+  border-top-right-radius: 8px; */
+  border-radius: 8px;
+}
+
+.card-img {
+  display: block;
+  overflow: hidden;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.card-wrapper .card-img img {
+  transform: scale(1);
+  transition: all 0.3s ease-in-out;
+
+  display: block;
+}
+
+.card-wrapper:hover .card-img img {
+  transform: scale(1.1);
+  overflow: hidden;
+  display: block;
+}
+
+.bestSeller::before {
+  content: "";
+  position: absolute;
+  border-style: solid;
+  border-width: 14px;
+  border-color: transparent transparent transparent rgb(234 179 8);
+  left: 100%;
+  top: 0;
+}
+
+.card-heading {
+  display: block;
+  display: -webkit-box;
+  height: 86px;
+  line-height: 1.6;
+  -webkit-line-clamp: 2; /* số dòng hiển thị */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
