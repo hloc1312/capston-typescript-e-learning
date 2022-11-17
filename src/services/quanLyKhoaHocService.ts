@@ -14,4 +14,16 @@ export const quanLyKhoaHocService = {
   layDanhMucKhoaHoc: () => {
     return api.get("QuanLyKhoaHoc/LayDanhMucKhoaHoc");
   },
+
+  layDanhSachKhoaHocPhanTrang: (page: number, pageSize: number) => {
+    return api.get(
+      `QuanLyKhoaHoc/LayDanhSachKhoaHoc_PhanTrang?page=${page}&pageSize=${pageSize}&MaNhom=${GROUPID}`
+    );
+  },
+
+  layKhoaHocTheoDanhMuc: (maDanhMuc: string) => {
+    return api.get(
+      `QuanLyKhoaHoc/LayKhoaHocTheoDanhMuc?maDanhMuc=${maDanhMuc}&MaNhom=${GROUPID}`
+    );
+  },
 };
