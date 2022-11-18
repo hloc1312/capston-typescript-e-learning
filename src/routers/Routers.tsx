@@ -5,7 +5,8 @@ import HomeTemplate from "../components/Layouts/HomeTemplate/HomeTemplate";
 import Contact from "../pages/Contact/Contact";
 import CourseList from "../pages/CourseList/CourseList";
 import Home from "../pages/Home/Home";
-import Login from '../../src/pages/Login/Login'
+import Login from "../pages/Login/Login";
+
 
 
 import News from "../pages/News/News";
@@ -88,7 +89,7 @@ const Routers = () => {
       children: [
         {
           path: "login",
-          element: <Login />,
+          element: <Login/>,
         },
         // {
         //   path: "register",
