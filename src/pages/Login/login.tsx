@@ -28,7 +28,7 @@ const Login = () => {
     onSubmit: (values: UserLogin) => {
       dispatch(userLogin(values))
         .unwrap()
-        .then(() => navigate(-2));
+        .then(() => navigate(-1));
     },
     validationSchema: Yup.object({
       taiKhoan: Yup.string().required("Tài khoản không được bỏ trống"),

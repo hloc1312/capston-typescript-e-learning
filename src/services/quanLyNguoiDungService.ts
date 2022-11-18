@@ -1,22 +1,13 @@
 import { api } from "../constants/api";
-import {
-  User,
-  UserLogin,
-
-} from "../types/quanLyNguoiDungTypes";
+import { User, UserLogin } from "../types/quanLyNguoiDungTypes";
 import { GROUPID } from "../utils/config";
 
 export const quanLyNguoiDungService = {
   getListUser: () => {
-    return api.get<HttpResponse<User[]>>(
-      `QuanLyNguoiDung/LayDanhSachNguoiDung?maNhom=${GROUPID}`
-    );
+    return api.get(`QuanLyNguoiDung/LayDanhSachNguoiDung?maNhom=${GROUPID}`);
   },
 
   dangNhap: (thongTinDangNhap: UserLogin) => {
-    return api.post<HttpResponse<User>>(
-      "QuanLyNguoiDung/DangNhap",
-      thongTinDangNhap
-    );
+    return api.post("QuanLyNguoiDung/DangNhap", thongTinDangNhap);
   },
-}
+};

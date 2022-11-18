@@ -1,11 +1,10 @@
 export interface User {
   taiKhoan?: string;
-  matKhau?: string;
-  nhapLaiMaKhau?: string;
-  hoTen?: string;
   email?: string;
   soDT?: string;
-  maLoaiNguoiDung?: string;
+  maNhom?: string;
+  aLoaiNguoiDung?: string;
+  hoTen?: string;
   accessToken?: string;
 }
 export interface UserLogin {
