@@ -1,9 +1,11 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { quanLyKhoaHocReducer } from "./quanLyKhoaHoc/quanLyKhoaHocReducer";
+import { quanLyNguoiDungReducer } from "./quanLyNguoiDung";
 
 const rootReducers = combineReducers({
   quanLyKhoaHocReducer,
+  quanLyNguoiDungReducer,
 });
 
 export const store = configureStore({
