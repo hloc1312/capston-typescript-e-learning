@@ -1,0 +1,25 @@
+.RoadMap-items > *:nth-of-type(2n + 1) {
+  justify-content: start;
+}
+
+.RoadMap-items > *:nth-of-type(2n + 1) div {
+  border-radius: 50px 0 50px 0;
+  text-align: right;
+}
+
+.RoadMap-items > *:nth-of-type(2n + 1) div p {
+  border-radius: 40px 0 40px 0;
+}
+
+.RoadMap-items > *:nth-of-type(2n) {
+  justify-content: end;
+}
+
+.RoadMap-items > *:nth-of-type(2n) div {
+  border-radius: 0 50px 0 50px;
+  text-align: left;
+}
+
+.RoadMap-items > *:nth-of-type(2n) div p {
+  border-radius: 40px 0 40px 0;
+}

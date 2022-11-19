@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import logo from "../../../assets/images/logo.png";
 import { DownOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
@@ -9,6 +9,7 @@ import { layDanhSachKhoaHoc } from "../../../store/quanLyKhoaHoc/quanLyKhoaHocRe
 const Header = () => {
   const [scrollY, setScrollY] = useState(0);
   const [search, setSearch] = useState("");
+  const navigate = useNavigate();
   const dispatch = useAppDispath();
   const handleSubmit = (e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -150,6 +151,7 @@ const Header = () => {
           <button
             type="button"
             className="hidden px-6 py-2 font-semibold rounded lg:block dark:bg-violet-400 dark:text-gray-900 text-white bg-gradient-to-r from-yellow-500 via-yellow-500 to-yellow-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-yellow-300 dark:focus:ring-yellow-700  text-sm text-center "
+            onClick={() => navigate("/user/login")}
           >
             Log in
           </button>
