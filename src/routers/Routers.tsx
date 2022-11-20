@@ -4,6 +4,7 @@ import { Navigate, useRoutes } from "react-router-dom";
 import HomeTemplate from "../components/Layouts/HomeTemplate/HomeTemplate";
 import Contact from "../pages/Contact/Contact";
 import CourseList from "../pages/CourseList/CourseList";
+import Detail from "../pages/Detail/Detail";
 import Home from "../pages/Home/Home";
 import Login from "../pages/Login/login";
 
@@ -59,6 +60,10 @@ const Routers = () => {
         {
           path: "course",
           element: <CourseList />,
+        },
+        {
+          path: "/detail/:id",
+          element: <Detail />,
         },
       ],
     },

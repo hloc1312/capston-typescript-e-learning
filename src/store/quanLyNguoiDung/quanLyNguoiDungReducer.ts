@@ -1,6 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { quanLyNguoiDungService } from "../../services/quanLyNguoiDungService";
-import { User, UserLogin } from "../../types/quanLyNguoiDungTypes";
+import {
+  ThongTinTaiKhoan,
+  User,
+  UserLogin,
+} from "../../types/quanLyNguoiDungTypes";
 import { TOKEN, USER_LOGIN } from "../../utils/config";
 let userLocalStorage = {};
 interface InitialState {
@@ -23,6 +27,10 @@ interface InitialState {
   // errThemNguoiDung: any;
   // // isFetchingCapNhatNguoiDungAdmin: boolean;
   // // errCapNhatNguoiDungAdmin: any;
+
+  thongTinTaiKhoan?: ThongTinTaiKhoan;
+  isFetchingThongTinTaiKhoan: boolean;
+  errThongTinTaiKhoan: any;
 }
 if (localStorage.getItem(USER_LOGIN)) {
   userLocalStorage = JSON.parse(localStorage.getItem(USER_LOGIN) as string);
@@ -39,6 +47,8 @@ const initialState: InitialState = {
   //   errCapNhat: "",
   //   isFetchingDSNguoiDung: false,
   errDSNguoiDung: "",
+  isFetchingThongTinTaiKhoan: false,
+  errThongTinTaiKhoan: "",
 
   //     danhSachNguoiDung: [
   //     {
@@ -84,6 +94,18 @@ export const {
       .addCase(userLogin.rejected, (state, action) => {
         state.isFetching = false;
         state.err = action.payload;
+      })
+      // ThongTinTaiKhoan
+      .addCase(thongTinTaiKhoanActions.pending, (state, action) => {
+        state.isFetchingThongTinTaiKhoan = true;
+      })
+      .addCase(thongTinTaiKhoanActions.fulfilled, (state, action) => {
+        state.isFetchingThongTinTaiKhoan = false;
+        state.thongTinTaiKhoan = action.payload;
+      })
+      .addCase(thongTinTaiKhoanActions.rejected, (state, action) => {
+        state.isFetchingThongTinTaiKhoan = false;
+        state.errThongTinTaiKhoan = action.payload;
       });
   },
   //     initialState,
@@ -118,6 +140,18 @@ export const userLogin = createAsyncThunk(
   ) => {
     try {
       const result = await quanLyNguoiDungService.dangNhap(thongTinDangNhap);
+      return result.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const thongTinTaiKhoanActions = createAsyncThunk(
+  "quanLyNguoiDung/thongTinTaiKhoan",
+  async (data, { dispatch, getState, rejectWithValue }) => {
+    try {
+      const result = await quanLyNguoiDungService.thongTinTaiKhoan();
       return result.data;
     } catch (err: any) {
       return rejectWithValue(err.response.data);
