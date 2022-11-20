@@ -1,4 +1,5 @@
 import { api } from "../constants/api";
+import { DangKyKhoaHoc } from "../types/quanLyKhoaHocTypes";
 import { GROUPID } from "../utils/config";
 
 export const quanLyKhoaHocService = {
@@ -25,5 +26,13 @@ export const quanLyKhoaHocService = {
     return api.get(
       `QuanLyKhoaHoc/LayKhoaHocTheoDanhMuc?maDanhMuc=${maDanhMuc}&MaNhom=${GROUPID}`
     );
+  },
+
+  layThongTinKhoaHoc: (maKhoaHoc: string) => {
+    return api.get(`QuanLyKhoaHoc/LayThongTinKhoaHoc?maKhoaHoc=${maKhoaHoc}`);
+  },
+
+  dangKyKhoaHoc: (dangKyKhoaHoc: DangKyKhoaHoc) => {
+    return api.post("QuanLyKhoaHoc/DangKyKhoaHoc", dangKyKhoaHoc);
   },
 };

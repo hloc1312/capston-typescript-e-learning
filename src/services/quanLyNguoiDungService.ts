@@ -10,4 +10,8 @@ export const quanLyNguoiDungService = {
   dangNhap: (thongTinDangNhap: UserLogin) => {
     return api.post("QuanLyNguoiDung/DangNhap", thongTinDangNhap);
   },
+
+  thongTinTaiKhoan: () => {
+    return api.post("QuanLyNguoiDung/ThongTinTaiKhoan");
+  },
 };
