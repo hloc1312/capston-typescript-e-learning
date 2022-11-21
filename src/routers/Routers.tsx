@@ -9,6 +9,7 @@ import Home from "../pages/Home/Home";
 import Login from "../pages/Login/login";
 
 import News from "../pages/News/News";
+import Profile from "../pages/Profile/Profile";
 
 const HomeTemplateLazy = lazy(
   () => import("../components/Layouts/HomeTemplate/HomeTemplate")
@@ -64,6 +65,10 @@ const Routers = () => {
         {
           path: "/detail/:id",
           element: <Detail />,
+        },
+        {
+          path: "/profile",
+          element: <Profile />,
         },
       ],
     },

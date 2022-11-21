@@ -6,8 +6,11 @@ import type { MenuProps } from "antd";
 import { Dropdown, Space } from "antd";
 import { useAppDispath } from "../../../store/configStore";
 import { layDanhSachKhoaHoc } from "../../../store/quanLyKhoaHoc/quanLyKhoaHocReducer";
+import { TOKEN, USER_LOGIN } from "../../../utils/config";
 const Header = () => {
   const [scrollY, setScrollY] = useState(0);
+  const user = localStorage.getItem(USER_LOGIN);
+  const userLogin = JSON.parse(user as string);
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
   const dispatch = useAppDispath();
@@ -15,6 +18,50 @@ const Header = () => {
     e.preventDefault();
     dispatch(layDanhSachKhoaHoc(search));
   };
+  const items: MenuProps["items"] = [
+    {
+      label: (
+        <button
+          className="hover:text-pink-600 block w-full text-left"
+          onClick={() => navigate("/profile")}
+        >
+          Thông tin cá nhân
+        </button>
+      ),
+      key: "0",
+    },
+    {
+      label:
+        userLogin?.maLoaiNguoiDung === "GV" ? (
+          <button
+            className="hover:text-pink-600 block w-full text-left"
+            onClick={() => navigate("/admin")}
+          >
+            Vào trang admin
+          </button>
+        ) : null,
+      key: "1",
+    },
+    {
+      type: "divider",
+    },
+    {
+      label: (
+        <button
+          className="hover:text-pink-600 block w-full text-left"
+          onClick={() => {
+            localStorage.removeItem(USER_LOGIN);
+            localStorage.removeItem(TOKEN);
+            window.location.reload();
+            navigate("/home");
+          }}
+        >
+          Đăng xuất
+        </button>
+      ),
+      key: "3",
+    },
+  ];
   const handleScrollY = () => {
     const scrollY = window.scrollY || document.documentElement.scrollTop;
     setScrollY(scrollY);
@@ -148,13 +195,21 @@ const Header = () => {
               className="w-32 pr-2 py-2 pl-10 text-sm rounded-md sm:w-auto focus:outline-none dark:bg-gray-800 dark:text-gray-100 focus:dark:bg-gray-900"
             />
           </form>
-          <button
-            type="button"
-            className="hidden px-6 py-2 font-semibold rounded lg:block dark:bg-violet-400 dark:text-gray-900 text-white bg-gradient-to-r from-yellow-500 via-yellow-500 to-yellow-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-yellow-300 dark:focus:ring-yellow-700  text-sm text-center "
-            onClick={() => navigate("/user/login")}
-          >
-            Log in
-          </button>
+          {user ? (
+            <Dropdown menu={{ items }} trigger={["click"]}>
+              <button className="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center">
+                Hi! {userLogin.taiKhoan} <DownOutlined className="ml-2" />
+              </button>
+            </Dropdown>
+          ) : (
+            <button
+              type="button"
+              className="hidden px-6 py-2 font-semibold rounded lg:block dark:bg-violet-400 dark:text-gray-900 text-white bg-gradient-to-r from-yellow-500 via-yellow-500 to-yellow-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-yellow-300 dark:focus:ring-yellow-700  text-sm text-center "
+              onClick={() => navigate("/user/login")}
+            >
+              Log in
+            </button>
+          )}
         </div>
         <button title="Open menu" type="button" className="p-4 lg:hidden">
           <svg

@@ -18,19 +18,13 @@ const RoadMap = () => {
   useLayoutEffect(() => {
     let element = ref.current;
     let svg: any = document.getElementById("svg-path");
-    // let svg = document.getElementsByClassName("svg-path")[0].;
+
     const length = svg?.getTotalLength();
-
-    console.log("LengthSVG ", length);
-
-    //start positioning of svg drawing
 
     svg!.style.strokeDasharray = JSON.stringify(length);
     // //hide svg before scrolling start
     svg!.style.strokeDashoffset = JSON.stringify(length);
 
-    // svg?.style?.strokeDashoffset = length;
-    // console.log({ length });
     let t1 = gsap.timeline({
       scrollTrigger: {
         trigger: element,
