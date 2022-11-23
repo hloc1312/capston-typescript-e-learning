@@ -1,5 +1,5 @@
 import { api } from "../constants/api";
-import { DangKyKhoaHoc } from "../types/quanLyKhoaHocTypes";
+import { DangKyKhoaHoc, HuyGhiDanh } from "../types/quanLyKhoaHocTypes";
 import { GROUPID } from "../utils/config";
 
 export const quanLyKhoaHocService = {
@@ -34,5 +34,9 @@ export const quanLyKhoaHocService = {
 
   dangKyKhoaHoc: (dangKyKhoaHoc: DangKyKhoaHoc) => {
     return api.post("QuanLyKhoaHoc/DangKyKhoaHoc", dangKyKhoaHoc);
+  },
+
+  huyGhiDanh: (huyGhiDanh: HuyGhiDanh) => {
+    return api.post(`QuanLyKhoaHoc/HuyGhiDanh`, huyGhiDanh);
   },
 };

@@ -8,7 +8,11 @@ import { useFormik } from "formik";
 import { CheckCircleFilled } from "@ant-design/icons";
 import * as Yup from "yup";
 import Loading from "../../components/Molecules/Loading/Loading";
-import { thongTinTaiKhoanActions } from "../../store/quanLyNguoiDung";
+import {
+  capNhatThongTinNguoiDungActions,
+  thongTinTaiKhoanActions,
+} from "../../store/quanLyNguoiDung";
+import { huyGhiDanhAction } from "../../store/quanLyKhoaHoc/quanLyKhoaHocReducer";
 
 const Profile = () => {
   const { Panel } = Collapse;
@@ -20,15 +24,17 @@ const Profile = () => {
 
   const handleOk = () => {
     setIsModalOpen(false);
-    // navigate("/admin/films");
   };
   const phoneRegExp = /^(84|0[3|5|7|8|9])+([0-9]{8})\b$/;
 
-  const { thongTinTaiKhoan, isFetchingThongTinTaiKhoan } = useSelector(
-    (state: RootState) => {
-      return state.quanLyNguoiDungReducer;
-    }
-  );
+  const { thongTinTaiKhoan } = useSelector((state: RootState) => {
+    return state.quanLyNguoiDungReducer;
+  });
+  console.log({ thongTinTaiKhoan });
+
+  const { isFetchingHuyGhiDanh } = useSelector((state: RootState) => {
+    return state.quanLyKhoaHocReducer;
+  });
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -52,19 +58,19 @@ const Profile = () => {
     }),
     onSubmit: (values: any) => {
       console.log("values", values);
-      //   dispatch(capNhatThongTinNguoiDung(values))
-      //     .unwrap()
-      //     .then(() => {
-      //       showModal();
-      //     });
+      dispatch(capNhatThongTinNguoiDungActions(values))
+        .unwrap()
+        .then(() => {
+          showModal();
+        });
     },
   });
   useEffect(() => {
     dispatch(thongTinTaiKhoanActions());
   }, []);
-  //   if (isFethincg) {
-  //     return <Loading />;
-  //   }
+  if (isFetchingHuyGhiDanh) {
+    return <Loading />;
+  }
   return (
     <div className="ThongTinCaNhan ">
       <Modal
@@ -96,9 +102,7 @@ const Profile = () => {
           </p>
         </div>
       </Modal>
-      {/* <p className="text-xl text-center mb-10 font-bold uppercase">
-        Trang cá nhân
-      </p> */}
+
       <div
         className="carousel-course uppercase py-[150px] px-10 text-4xl text-white"
         style={{
@@ -185,30 +189,25 @@ const Profile = () => {
                       defaultValue={khoaHoc.danhGia / 2}
                     />
                   </p>
-                </div>
-                {/* <div className="col-span-12 md:col-span-7 md:pl-3">
-                  <p className="m-0 font-semibold">Danh sách ghế</p>
-                  {ve.danhSachGhe.map((ghe, i) => (
-                    <div key={i}>
-                      <span className="font-semibold">Ghế: </span>
-                      <span className="text-amber-500">{ghe.tenGhe}</span>
-                      <span>/</span>
-                      <span className="text-amber-500">{ghe.tenRap}</span>
-                      <span>/</span>
-                      <span className="text-amber-500">
-                        {ghe.tenHeThongRap}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-                <div className="col-span-12 lg:col-span-1">
-                  <p>
-                    <span className="font-semibold">Tổng tiền:</span>{" "}
-                    <span className="text-amber-500 text-xl font-semibold">
-                      {(ve.giaVe * ve.danhSachGhe.length).toLocaleString()}đ
+                  <button
+                    className="mt-2 relative items-center justify-center inline-block p-4 px-5 py-3 overflow-hidden font-medium text-indigo-600 rounded-lg shadow-2xl group"
+                    onClick={() =>
+                      dispatch(
+                        huyGhiDanhAction({
+                          maKhoaHoc: khoaHoc.maKhoaHoc,
+                          taiKhoan: thongTinTaiKhoan.taiKhoan,
+                        })
+                      )
+                    }
+                  >
+                    <span className="absolute top-0 left-0 w-40 h-40 -mt-10 -ml-3 transition-all duration-700 bg-red-500 rounded-full blur-md ease" />
+                    <span className="absolute inset-0 w-full h-full transition duration-700 group-hover:rotate-180 ease">
+                      <span className="absolute bottom-0 left-0 w-24 h-24 -ml-10 bg-purple-500 rounded-full blur-md" />
+                      <span className="absolute bottom-0 right-0 w-24 h-24 -mr-10 bg-pink-500 rounded-full blur-md" />
                     </span>
-                  </p>
-                </div> */}
+                    <span className="relative text-white">Hủy đăng ký</span>
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -280,8 +279,10 @@ const Profile = () => {
             </Form.Item>
 
             <Form.Item wrapperCol={{ offset: 5, span: 16 }}>
-              {/* {errCapNhat !== "" ? (
-                <p className="text-red-500 font-bold">{errCapNhat.content}</p>
+              {/* {errCapNhatThongTinNguoiDung !== "" ? (
+                <p className="text-red-500 font-bold">
+                  {errCapNhatThongTinNguoiDung}
+                </p>
               ) : (
                 ""
               )} */}

@@ -103,3 +103,8 @@ export interface DangKyKhoaHoc {
   maKhoaHoc: string;
   taiKhoan: string;
 }
+
+export interface HuyGhiDanh {
+  maKhoaHoc: string;
+  taiKhoan: string;
+}

@@ -3,6 +3,7 @@ import { Carousel } from "antd";
 import ReactPlayer from "react-player";
 import "./homeCarousel.css";
 import Typewriter from "typewriter-effect";
+import { useNavigate } from "react-router-dom";
 const HomeCarousel = () => {
   const contentStyle: React.CSSProperties = {
     margin: 0,
@@ -12,6 +13,7 @@ const HomeCarousel = () => {
     textAlign: "center",
     background: "#364d79",
   };
+  const navigate = useNavigate();
   return (
     <Carousel>
       <div className="introContainer">
@@ -60,6 +62,7 @@ const HomeCarousel = () => {
             <button
               type="button"
               className="text-gray-900 bg-gradient-to-r from-red-200 via-red-300 to-yellow-200 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 uppercase"
+              onClick={() => navigate(`/course`)}
             >
               Xem khóa học
             </button>
