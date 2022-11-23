@@ -1,5 +1,6 @@
 import { Rate } from "antd";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { LayDanhSachKhoaHoc } from "../../../types/quanLyKhoaHocTypes";
 import "./cardCourseListDetail.css";
 
@@ -7,6 +8,7 @@ type ChildProps = React.HTMLAttributes<HTMLDivElement> & {
   khoaHoc: LayDanhSachKhoaHoc;
 };
 const CardCourseListDetail: React.FC<ChildProps> = ({ khoaHoc }) => {
+  const navigate = useNavigate();
   return (
     <div className="card-wrapper w-1/4 p-2 box-border relative">
       <div className="card rounded-lg h-full border-[1px] border-[rgba(0, 0, 0, 0.125)] rounded-sm border-solid">
@@ -34,6 +36,7 @@ const CardCourseListDetail: React.FC<ChildProps> = ({ khoaHoc }) => {
             <button
               type="button"
               className="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:focus:ring-yellow-600 uppercase cursor-pointer mt-4"
+              onClick={() => navigate(`/detail/${khoaHoc.maKhoaHoc}`)}
             >
               đăng ký
             </button>

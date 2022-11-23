@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { quanLyKhoaHocService } from "../../services/quanLyKhoaHocService";
 import {
   DangKyKhoaHoc,
+  HuyGhiDanh,
   LayDanhMucKhoaHoc,
   LayDanhSachKhoaHoc,
   LayDanhSachKhoaHocPhanTrang,
@@ -33,6 +34,9 @@ interface InitialState {
 
   isFetchingDangKyKhoaHoc: boolean;
   errDangKyKhoaHoc: any;
+
+  isFetchingHuyGhiDanh: boolean;
+  errHuyGhiDanh: any;
 }
 
 const initialState: InitialState = {
@@ -51,6 +55,9 @@ const initialState: InitialState = {
 
   isFetchingDangKyKhoaHoc: false,
   errDangKyKhoaHoc: "",
+
+  isFetchingHuyGhiDanh: false,
+  errHuyGhiDanh: "",
 };
 export const { reducer: quanLyKhoaHocReducer, actions: quanLyKhoaHocAction } =
   createSlice({
@@ -129,6 +136,17 @@ export const { reducer: quanLyKhoaHocReducer, actions: quanLyKhoaHocAction } =
         .addCase(dangKyKhoaHoc.rejected, (state, action) => {
           state.isFetchingDangKyKhoaHoc = false;
           state.errDangKyKhoaHoc = action.payload;
+        })
+        // huyGhiDanh
+        .addCase(huyGhiDanhAction.pending, (state, action) => {
+          state.isFetchingHuyGhiDanh = true;
+        })
+        .addCase(huyGhiDanhAction.fulfilled, (state, action) => {
+          state.isFetchingHuyGhiDanh = false;
+        })
+        .addCase(huyGhiDanhAction.rejected, (state, action) => {
+          state.isFetchingHuyGhiDanh = false;
+          state.errHuyGhiDanh = action.payload;
         });
     },
   });
@@ -204,6 +222,19 @@ export const dangKyKhoaHoc = createAsyncThunk(
   async (data: DangKyKhoaHoc, { dispatch, rejectWithValue }) => {
     try {
       const result = await quanLyKhoaHocService.dangKyKhoaHoc(data);
+      return result.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const huyGhiDanhAction = createAsyncThunk(
+  "quanLyKhoaHoc/huyGhiDanh",
+  async (huyGhiDanh: HuyGhiDanh, { dispatch, rejectWithValue }) => {
+    try {
+      const result = await quanLyKhoaHocService.huyGhiDanh(huyGhiDanh);
+      dispatch(thongTinTaiKhoanActions());
       return result.data;
     } catch (err: any) {
       return rejectWithValue(err.response.data);

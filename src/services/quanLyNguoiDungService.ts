@@ -1,5 +1,9 @@
 import { api } from "../constants/api";
-import { User, UserLogin } from "../types/quanLyNguoiDungTypes";
+import {
+  CapNhatThongTinNguoiDung,
+  User,
+  UserLogin,
+} from "../types/quanLyNguoiDungTypes";
 import { GROUPID } from "../utils/config";
 
 export const quanLyNguoiDungService = {
@@ -13,5 +17,14 @@ export const quanLyNguoiDungService = {
 
   thongTinTaiKhoan: () => {
     return api.post("QuanLyNguoiDung/ThongTinTaiKhoan");
+  },
+
+  capNhatThongTinNguoiDung: (
+    capNhapThongTinNguoiDung: CapNhatThongTinNguoiDung
+  ) => {
+    return api.put(
+      `QuanLyNguoiDung/CapNhatThongTinNguoiDung`,
+      capNhapThongTinNguoiDung
+    );
   },
 };

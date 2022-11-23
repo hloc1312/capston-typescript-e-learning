@@ -33,3 +33,13 @@ interface ChiTietKhoaHocGhiDanh {
   ngayTao: string;
   danhGia: number;
 }
+
+export interface CapNhatThongTinNguoiDung {
+  taiKhoan: string;
+  matKhau: string;
+  hoTen: string;
+  soDT: string;
+  maLoaiNguoiDung: string;
+  maNhom: string;
+  email: string;
+}
