@@ -5,7 +5,7 @@ import HomeTemplate from "../components/Layouts/HomeTemplate/HomeTemplate";
 import Contact from "../pages/Contact/Contact";
 import CourseList from "../pages/CourseList/CourseList";
 import Home from "../pages/Home/Home";
-import Login from "../pages/Login/login";
+import Login from "../pages/Login/Login";
 
 import News from "../pages/News/News";
 
