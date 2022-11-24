@@ -4,6 +4,7 @@ import {
   User,
   UserLogin,
   CapNhatNguoiDung,
+  CapNhatThongTinNguoiDung,
 } from "../types/quanLyNguoiDungTypes";
 import { GROUPID } from "../utils/config";
 
@@ -36,6 +37,18 @@ export const quanLyNguoiDungService = {
     return api.post(
       "QuanLyNguoiDung/CapNhatThongTinNguoiDung",
       thongTinNguoiDung
+    );
+  },
+  thongTinTaiKhoan: () => {
+    return api.post("QuanLyNguoiDung/ThongTinTaiKhoan");
+  },
+
+  capNhatThongTinNguoiDung: (
+    capNhapThongTinNguoiDung: CapNhatThongTinNguoiDung
+  ) => {
+    return api.put(
+      `QuanLyNguoiDung/CapNhatThongTinNguoiDung`,
+      capNhapThongTinNguoiDung
     );
   },
 };

@@ -102,14 +102,14 @@ const AdminTemplate = () => {
                 </Menu.Item>
               </SubMenu>
 
-              <SubMenu key="sub1" icon={<FileOutlined />} title="Films">
+              {/* <SubMenu key="sub1" icon={<FileOutlined />} title="Films">
                 <Menu.Item key="10" icon={<FileOutlined />}>
                   <NavLink to="/admin/films">Films</NavLink>
                 </Menu.Item>
                 <Menu.Item key="11" icon={<FileOutlined />}>
                   <NavLink to="/admin/films/addfilm">Add new</NavLink>
                 </Menu.Item>
-              </SubMenu>
+              </SubMenu> */}
               {/* <Menu.Item key="3" icon={<DesktopOutlined />}>
                 <NavLink to="/admin/showtimes">Showtime</NavLink>
               </Menu.Item> */}

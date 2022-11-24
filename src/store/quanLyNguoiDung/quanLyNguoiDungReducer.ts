@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { quanLyNguoiDungService } from "../../services/quanLyNguoiDungService";
-import { CapNhatNguoiDung, DanhSachNguoiDung, ThemNguoiDung, User, UserLogin } from "../../types/quanLyNguoiDungTypes";
+import { CapNhatNguoiDung, CapNhatThongTinNguoiDung, DanhSachNguoiDung, ThemNguoiDung, ThongTinTaiKhoan, User, UserLogin } from "../../types/quanLyNguoiDungTypes";
 import { TOKEN, USER_LOGIN } from "../../utils/config";
 let userLocalStorage = {};
 interface InitialState {
@@ -10,8 +10,8 @@ interface InitialState {
   // thongTinNguoiDung?: GetThongTinNguoiDung;
   isFetchingThongTinNguoiDung: boolean;
   errThongTinNguoiDung: any;
-  // isFetchingRegister: boolean;
-  // errRegister: any;
+  isFetchingRegister: boolean;
+  errRegister: any;
   isFetchingCapNhat: boolean;
   errCapNhat: any;
   danhSachNguoiDung: DanhSachNguoiDung[];
@@ -23,6 +23,12 @@ interface InitialState {
   errThemNguoiDung: any;
   isFetchingCapNhatNguoiDungAdmin: boolean;
   errCapNhatNguoiDungAdmin: any;
+  thongTinTaiKhoan?: ThongTinTaiKhoan;
+  isFetchingThongTinTaiKhoan: boolean;
+  errThongTinTaiKhoan: any;
+
+  isFetchingCapNhatThongTinNguoiDung: boolean;
+  errCapNhatThongTinNguoiDung: any;
 }
 if (localStorage.getItem(USER_LOGIN)) {
   userLocalStorage = JSON.parse(localStorage.getItem(USER_LOGIN) as string);
@@ -33,22 +39,22 @@ const initialState: InitialState = {
   user: userLocalStorage,
   errThongTinNguoiDung: "",
   isFetchingThongTinNguoiDung: false,
-  //   isFetchingRegister: false,
-  //   errRegister: "",
-    isFetchingCapNhat: false,
-    errCapNhat: "",
-    isFetchingDSNguoiDung: false,
+  // isFetchingRegister: false,
+  // errRegister: "",
+  isFetchingCapNhat: false,
+  errCapNhat: "",
+  isFetchingDSNguoiDung: false,
   errDSNguoiDung: "",
-      danhSachNguoiDung: [
-      {
-        taiKhoan: "test1312",
-        hoTen: "hello1312",
-        email: "abcHello13121@gmail.com",
-        soDT: "0909123123",
-        matKhau:"1312",
-        maLoaiNguoiDung: "QuanTri",
-      },
-    ],
+  danhSachNguoiDung: [
+    {
+      taiKhoan: "test1312",
+      hoTen: "hello1312",
+      email: "abcHello13121@gmail.com",
+      soDT: "0909123123",
+      matKhau: "1312",
+      maLoaiNguoiDung: "QuanTri",
+    },
+  ],
 
   isFetchingXoaNguoiDung: false,
   errXoaNguoiDung: "",
@@ -56,6 +62,12 @@ const initialState: InitialState = {
   errThemNguoiDung: "",
   isFetchingCapNhatNguoiDungAdmin: false,
   errCapNhatNguoiDungAdmin: "",
+  isFetchingRegister: false,
+  errRegister: undefined,
+  isFetchingThongTinTaiKhoan: false,
+  errThongTinTaiKhoan: undefined,
+  isFetchingCapNhatThongTinNguoiDung: false,
+  errCapNhatThongTinNguoiDung: undefined
 }
 
 export const {
@@ -84,6 +96,31 @@ export const {
       .addCase(userLogin.rejected, (state, action) => {
         state.isFetching = false;
         state.err = action.payload;
+      })
+
+      // ThongTinTaiKhoan
+      .addCase(thongTinTaiKhoanActions.pending, (state, action) => {
+        state.isFetchingThongTinTaiKhoan = true;
+      })
+      .addCase(thongTinTaiKhoanActions.fulfilled, (state, action) => {
+        state.isFetchingThongTinTaiKhoan = false;
+        state.thongTinTaiKhoan = action.payload;
+      })
+      .addCase(thongTinTaiKhoanActions.rejected, (state, action) => {
+        state.isFetchingThongTinTaiKhoan = false;
+        state.errThongTinTaiKhoan = action.payload;
+      })
+      // CapNhatThongTinNguoiDung
+      .addCase(capNhatThongTinNguoiDungActions.pending, (state, action) => {
+        state.isFetchingCapNhatThongTinNguoiDung = true;
+      })
+      .addCase(capNhatThongTinNguoiDungActions.fulfilled, (state, action) => {
+        state.isFetchingCapNhatThongTinNguoiDung = false;
+        state.errCapNhatThongTinNguoiDung = "";
+      })
+      .addCase(capNhatThongTinNguoiDungActions.rejected, (state, action) => {
+        state.isFetchingCapNhatThongTinNguoiDung = false;
+        state.errCapNhatThongTinNguoiDung = action.payload;
       });
   },
   //     initialState,
@@ -170,6 +207,35 @@ export const capNhatNguoiDungAdmin = createAsyncThunk(
       );
       dispatch(danhSachNguoiDungAction(""));
       return result.data.content;
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+export const thongTinTaiKhoanActions = createAsyncThunk(
+  "quanLyNguoiDung/thongTinTaiKhoan",
+  async (data, { dispatch, getState, rejectWithValue }) => {
+    try {
+      const result = await quanLyNguoiDungService.thongTinTaiKhoan();
+      return result.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const capNhatThongTinNguoiDungActions = createAsyncThunk(
+  "quanLyNguoiDung/capNhatThongTinNguoiDung",
+  async (
+    data: CapNhatThongTinNguoiDung,
+    { dispatch, getState, rejectWithValue }
+  ) => {
+    try {
+      const result = await quanLyNguoiDungService.capNhatThongTinNguoiDung(
+        data
+      );
+      dispatch(thongTinTaiKhoanActions());
+      return result.data;
     } catch (err: any) {
       return rejectWithValue(err.response.data);
     }

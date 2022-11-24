@@ -1,11 +1,15 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { quanLyKhoaHocService } from "../../services/quanLyKhoaHocService";
 import {
+  DangKyKhoaHoc,
+  HuyGhiDanh,
   LayDanhMucKhoaHoc,
   LayDanhSachKhoaHoc,
   LayDanhSachKhoaHocPhanTrang,
   LayKhoaHocTheoDanhMuc,
+  LayThongTinKhoaHoc,
 } from "../../types/quanLyKhoaHocTypes";
+import { thongTinTaiKhoanActions } from "../quanLyNguoiDung";
 
 interface InitialState {
   danhSachKhoaHoc?: LayDanhSachKhoaHoc[];
@@ -23,6 +27,16 @@ interface InitialState {
   danhSachKhoaHocTheoDanhMuc?: LayKhoaHocTheoDanhMuc[];
   isFetchingDanhSachKhoaHocTheoDanhMuc: boolean;
   errDanhSachKhoaHocTheoDanhMuc: any;
+
+  thongTinKhoaHoc?: LayThongTinKhoaHoc;
+  isFetchingThongTinKhoaHoc: boolean;
+  errThongTinKhoaHoc: any;
+
+  isFetchingDangKyKhoaHoc: boolean;
+  errDangKyKhoaHoc: any;
+
+  isFetchingHuyGhiDanh: boolean;
+  errHuyGhiDanh: any;
 }
 
 const initialState: InitialState = {
@@ -35,6 +49,15 @@ const initialState: InitialState = {
 
   isFetchingDanhSachKhoaHocTheoDanhMuc: false,
   errDanhSachKhoaHocTheoDanhMuc: "",
+
+  isFetchingThongTinKhoaHoc: false,
+  errThongTinKhoaHoc: "",
+
+  isFetchingDangKyKhoaHoc: false,
+  errDangKyKhoaHoc: "",
+
+  isFetchingHuyGhiDanh: false,
+  errHuyGhiDanh: "",
 };
 export const { reducer: quanLyKhoaHocReducer, actions: quanLyKhoaHocAction } =
   createSlice({
@@ -90,6 +113,40 @@ export const { reducer: quanLyKhoaHocReducer, actions: quanLyKhoaHocAction } =
         .addCase(layDanhSachKhoaHocTheoDanhMuc.rejected, (state, action) => {
           state.isFetchingDanhSachKhoaHocTheoDanhMuc = false;
           state.errDanhSachKhoaHocTheoDanhMuc = action.payload;
+        })
+        // layThongTinKhoaHoc
+        .addCase(layThongTinKhoaHoc.pending, (state, action) => {
+          state.isFetchingThongTinKhoaHoc = true;
+        })
+        .addCase(layThongTinKhoaHoc.fulfilled, (state, action) => {
+          state.isFetchingThongTinKhoaHoc = false;
+          state.thongTinKhoaHoc = action.payload;
+        })
+        .addCase(layThongTinKhoaHoc.rejected, (state, action) => {
+          state.isFetchingThongTinKhoaHoc = false;
+          state.errThongTinKhoaHoc = action.payload;
+        })
+        // dangKyKhoaHoc
+        .addCase(dangKyKhoaHoc.pending, (state, action) => {
+          state.isFetchingDangKyKhoaHoc = true;
+        })
+        .addCase(dangKyKhoaHoc.fulfilled, (state, action) => {
+          state.isFetchingDangKyKhoaHoc = false;
+        })
+        .addCase(dangKyKhoaHoc.rejected, (state, action) => {
+          state.isFetchingDangKyKhoaHoc = false;
+          state.errDangKyKhoaHoc = action.payload;
+        })
+        // huyGhiDanh
+        .addCase(huyGhiDanhAction.pending, (state, action) => {
+          state.isFetchingHuyGhiDanh = true;
+        })
+        .addCase(huyGhiDanhAction.fulfilled, (state, action) => {
+          state.isFetchingHuyGhiDanh = false;
+        })
+        .addCase(huyGhiDanhAction.rejected, (state, action) => {
+          state.isFetchingHuyGhiDanh = false;
+          state.errHuyGhiDanh = action.payload;
         });
     },
   });
@@ -141,6 +198,43 @@ export const layDanhSachKhoaHocTheoDanhMuc = createAsyncThunk(
   async (danhMuc: string, { rejectWithValue }) => {
     try {
       const result = await quanLyKhoaHocService.layKhoaHocTheoDanhMuc(danhMuc);
+      return result.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const layThongTinKhoaHoc = createAsyncThunk(
+  "quanLyKhoaHoc/layThongTinKhoaHoc",
+  async (maKhoaHoc: string, { rejectWithValue }) => {
+    try {
+      const result = await quanLyKhoaHocService.layThongTinKhoaHoc(maKhoaHoc);
+      return result.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const dangKyKhoaHoc = createAsyncThunk(
+  "quanLyKhoaHoc/dangKyKhoaHoc",
+  async (data: DangKyKhoaHoc, { dispatch, rejectWithValue }) => {
+    try {
+      const result = await quanLyKhoaHocService.dangKyKhoaHoc(data);
+      return result.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const huyGhiDanhAction = createAsyncThunk(
+  "quanLyKhoaHoc/huyGhiDanh",
+  async (huyGhiDanh: HuyGhiDanh, { dispatch, rejectWithValue }) => {
+    try {
+      const result = await quanLyKhoaHocService.huyGhiDanh(huyGhiDanh);
+      dispatch(thongTinTaiKhoanActions());
       return result.data;
     } catch (err: any) {
       return rejectWithValue(err.response.data);
