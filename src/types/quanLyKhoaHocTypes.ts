@@ -82,6 +82,7 @@ export interface LayThongTinKhoaHoc {
   biDanh: string;
   tenKhoaHoc: string;
   moTa: string;
+  danhGia:string,
   luotXem: number;
   hinhAnh: string;
   maNhom: string;
@@ -121,4 +122,30 @@ export interface ThemKhoaHoc {
   ngayTao: string;
   maDanhMucKhoaHoc: string;
   taiKhoanNguoiTao: string;
+}
+export interface capNhatKhoaHoc{
+  maKhoaHoc: string,
+  biDanh: string,
+  tenKhoaHoc: string,
+  moTa: string,
+  luotXem: 0,
+  danhGia: 0,
+  hinhAnh: string,
+  maNhom: string,
+  ngayTao: string,
+  maDanhMucKhoaHoc: string,
+  taiKhoanNguoiTao: string
+}
+export interface danhSachKhoaHoc{
+  maKhoaHoc: string,
+  biDanh: string,
+  tenKhoaHoc: string,
+  moTa: string,
+  luotXem: 0,
+  danhGia: 0,
+  hinhAnh: string,
+  maNhom: string,
+  ngayTao: string,
+  maDanhMucKhoaHoc: string,
+  taiKhoanNguoiTao: string
 }

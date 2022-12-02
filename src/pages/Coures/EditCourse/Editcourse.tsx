@@ -19,10 +19,10 @@ import * as Yup from "yup";
 import { GROUPID } from "../../../utils/config";
 import { RootState, useAppDispath } from "../../../store/configStore";
 import {
-  capNhatKhoaHocUpload,
+  capNhatKhoaHocAction,
   layDanhMucKhoaHoc,
+  layDanhSachKhoaHoc,
   layThongTinKhoaHoc,
-  themKhoaHocUploadHinh,
 } from "../../../store/quanLyKhoaHoc/quanLyKhoaHocReducer";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -38,16 +38,16 @@ const EditCourse = () => {
   const [errSrcImg, setErrSrcImg] = useState("");
   const params = useParams();
   const dispatch = useAppDispath();
-  const { thongTinKhoaHoc, isFetchingUploadKhoaHoc, errUploadKhoaHoc } = useSelector(
-    (state: RootState) => {
+  const { thongTinKhoaHoc, isFetchingCapNhapKhoaHoc, errCapNhatKhoaHoc } =
+    useSelector((state: RootState) => {
       return state.quanLyKhoaHocReducer;
-    }
-  );
-  const {  danhMucKhoaHoc } = useSelector(
-    (state: RootState) => {
-      return state.quanLyKhoaHocReducer;
-    }
-  );
+    });
+  const { danhMucKhoaHoc } = useSelector((state: RootState) => {
+    return state.quanLyKhoaHocReducer;
+  });
+  const { danhSachKhoaHoc } = useSelector((state: RootState) => {
+    return state.quanLyKhoaHocReducer;
+  });
   const { arrDanhSachNguoiDung } = useSelector((state: RootState) => {
     return state.quanLyNguoiDungReducer;
   });
@@ -69,57 +69,66 @@ const EditCourse = () => {
   useEffect(() => {
     dispatch(layThongTinKhoaHoc(String(params.id)));
   }, []);
-    const formik = useFormik({
-      initialValues: {
-        maKhoaHoc: "",
-        tenKhoaHoc: "",
-        moTa: "",
-        luotXem: 0,
-        danhGia: 0,
-        hinhAnh: {},
-        maNhom: GROUPID,
-        ngayTao: "",
-        maDanhMucKhoaHoc: "",
-        taiKhoanNguoiTao: "",
-      },
-      validationSchema: Yup.object({
-        maKhoaHoc: Yup.string().required("Mã khóa học không được để trống!"),
-        tenKhoaHoc: Yup.string().required("Tên Phim không được để trống!"),
-        moTa: Yup.string().required("mô tả không được để trống!"),
-        danhGia: Yup.string().required("đánh giá không được để trống!"),
-        luotXem: Yup.string().required("Lượt xem không được bỏ trống"),
-        ngayTao: Yup.date()
-          .transform(function (value, originalValue) {
-            if (this.isType(value)) {
-              return value;
-            }
-            const result = parse(originalValue, "dd.MM.yyyy", new Date());
-            return result;
-          })
-          .typeError("Ngày tạo không được để trống!")
-          .required("Ngày tạo không được để trống!"),
-      }),
-    onSubmit: async (values: any) => {
-      console.log("values", values);
-      // tạo đối tượng formData
-      let formData = new FormData();
-      for (let key in values) {
-        if (key === "hinhAnh") {
-          if (values.hinhAnh !== null) {
-            formData.append("hinhAnh", values.hinhAnh, values.hinhAnh.name);
-          }
-        }
-        formData.append(key, values[key]);
-      }
-      // console.log(formData.get("maNhom"));
-      // navigate("/admin/films");
-      await dispatch(capNhatKhoaHocUpload(formData))
-        .unwrap()
-        .then(() => {
-          showModal();
-        });
+  const formik = useFormik({
+    initialValues: {
+      maKhoaHoc: thongTinKhoaHoc?.maKhoaHoc,
+      tenKhoaHoc: thongTinKhoaHoc?.tenKhoaHoc,
+      moTa: thongTinKhoaHoc?.moTa,
+      biDanh: thongTinKhoaHoc?.biDanh,
+      luotXem: thongTinKhoaHoc?.luotXem,
+      danhGia: thongTinKhoaHoc?.danhGia,
+      hinhAnh: null,
+      maNhom: GROUPID,
+      ngayTao: moment(thongTinKhoaHoc?.ngayTao).format("DD/MM/YY"),
+      maDanhMucKhoaHoc: thongTinKhoaHoc?.danhMucKhoaHoc,
+      taiKhoanNguoiTao: thongTinKhoaHoc?.nguoiTao,
     },
-  });
+    validationSchema: Yup.object({
+      maKhoaHoc: Yup.string().required("Mã khóa học không được để trống!"),
+      biDanh: Yup.string().required("Bí danh không được để trống!"),
+      tenKhoaHoc: Yup.string().required("Tên Phim không được để trống!"),
+      moTa: Yup.string().required("mô tả không được để trống!"),
+      danhGia: Yup.string().required("đánh giá không được để trống!"),
+      luotXem: Yup.string().required("Lượt xem không được bỏ trống"),
+      ngayTao: Yup.date()
+        .transform(function (value, originalValue) {
+          if (this.isType(value)) {
+            return value;
+          }
+          const result = parse(originalValue, "dd.MM.yyyy", new Date());
+          return result;
+        })
+        .typeError("Ngày tạo không được để trống!")
+        .required("Ngày tạo không được để trống!"),
+    }),
+    onSubmit: (values) => {
+      console.log( values);
+      dispatch(capNhatKhoaHocAction(values))
+      .then(()=>showModal)
+      .catch(()=>showModal)
+      // dispatch(capNhatKhoaHoc(values))
+      // .then(()=>setIsModalOpen)
+      // .catch(()=>setIsModalOpen)
+      // tạo đối tượng formData
+      // let formData = new FormData();
+      // for (let key in values) {
+      //   if (key === "hinhAnh") {
+      //     if (values.hinhAnh !== null) {
+      //       formData.append("hinhAnh", values.hinhAnh, values.hinhAnh.name);
+      //     }
+      //   }
+      //   formData.append(key, values[key]);
+      // }
+      // console.log(formData.get("maNhom"));
+      // navigate("/admin/courses");
+      // await dispatch(capNhatKhoaHoc(formData))
+      //   .unwrap()
+      //   .then(() => {
+      //     showModal();
+      //   });
+    },
+    },
+  );
   const handleSelectChange = (value: string) => {
     formik.setFieldValue("taiKhoanNguoiTao", value);
   };
@@ -129,8 +138,8 @@ const EditCourse = () => {
   };
   // const [layDanhMucKhoaHoc, setDanhMucKhoaHoc] = useState<LayDanhMucKhoaHoc[]>([]);
   const handChangeDataPicker = (value: any) => {
-    let ngayKhoiChieu = moment(value).format("DD/MM/YYYY");
-    formik.setFieldValue("ngayTao", ngayKhoiChieu);
+    let ngayTao = moment(value).format("DD/MM/YYYY");
+    formik.setFieldValue("ngayTao", ngayTao);
   };
   // React.ChangeEvent<HTMLInputElement>
   const handleChangeFile = async (e: any) => {
@@ -161,7 +170,7 @@ const EditCourse = () => {
       await setErrSrcImg("Không hỗ trợ định dạng file này");
     }
   };
-  if (isFetchingUploadKhoaHoc) {
+  if (isFetchingCapNhapKhoaHoc) {
     return <Loading />;
   }
   return (
@@ -176,7 +185,7 @@ const EditCourse = () => {
         initialValues={{ size: componentSize }}
         size={componentSize as SizeType}
       >
-         <Form.Item label="Mã Khóa Học">
+        <Form.Item label="Mã Khóa Học">
           <Input
             onChange={formik.handleChange}
             name="maKhoaHoc"
@@ -185,6 +194,17 @@ const EditCourse = () => {
           />
           {formik.errors.maKhoaHoc && formik.touched && (
             <p className="text-red-500 mb-0">{formik.errors.maKhoaHoc}</p>
+          )}
+        </Form.Item>
+        <Form.Item label="Bí danh">
+          <Input
+            onChange={formik.handleChange}
+            name="biDanh"
+            placeholder="Nhập vào bí danh"
+            value={formik.values.biDanh}
+          />
+          {formik.errors.biDanh && formik.touched && (
+            <p className="text-red-500 mb-0">{formik.errors.biDanh}</p>
           )}
         </Form.Item>
         <Form.Item label="Tên Khóa Học">
@@ -284,12 +304,17 @@ const EditCourse = () => {
         </Form.Item>
 
         <Form.Item label="Tác vụ">
-          <button className="focus:outline-none text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-3  dark:focus:ring-blue-900 mr-2 uppercase">
+          {/* <button className="focus:outline-none text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-3  dark:focus:ring-blue-900 mr-2 uppercase">
             Cập nhật khóa học
-          </button>
+          </button> */}
+          <Form.Item wrapperCol={{ offset: 4, span: 16 }}>
+            <Button type="primary" htmlType="submit">
+              Cập nhật khóa học
+            </Button>
+          </Form.Item>
         </Form.Item>
-        {errUploadKhoaHoc !== "" ? (
-          <p className="text-red-500 font-bold">{errUploadKhoaHoc}</p>
+        {errCapNhatKhoaHoc !== "" ? (
+          <p className="text-red-500 font-bold">{errCapNhatKhoaHoc}</p>
         ) : (
           ""
         )}
@@ -327,3 +352,6 @@ const EditCourse = () => {
   );
 };
 export default EditCourse;
+// function capNhatKhoaHocAction(formData: FormData): any {
+//   throw new Error("Function not implemented.");
+// }
