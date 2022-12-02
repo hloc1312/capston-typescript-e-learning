@@ -20,6 +20,7 @@ import { GROUPID } from "../../../utils/config";
 import { RootState, useAppDispath } from "../../../store/configStore";
 import {
   capNhatKhoaHocUpload,
+  layDanhMucKhoaHoc,
   layThongTinKhoaHoc,
   themKhoaHocUploadHinh,
 } from "../../../store/quanLyKhoaHoc/quanLyKhoaHocReducer";
@@ -27,6 +28,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Loading from "../../../components/Molecules/Loading/Loading";
 import { LayDanhMucKhoaHoc } from "../../../types/quanLyKhoaHocTypes";
+import { danhSachNguoiDungAction } from "../../../store/quanLyNguoiDung";
+import parse from "date-fns/parse";
 type SizeType = Parameters<typeof Form>[0]["size"];
 const EditCourse = () => {
   const [componentSize, setComponentSize] = useState("default");
@@ -40,6 +43,20 @@ const EditCourse = () => {
       return state.quanLyKhoaHocReducer;
     }
   );
+  const {  danhMucKhoaHoc } = useSelector(
+    (state: RootState) => {
+      return state.quanLyKhoaHocReducer;
+    }
+  );
+  const { arrDanhSachNguoiDung } = useSelector((state: RootState) => {
+    return state.quanLyNguoiDungReducer;
+  });
+  useEffect(() => {
+    dispatch(danhSachNguoiDungAction(""));
+  }, []);
+  useEffect(() => {
+    dispatch(layDanhMucKhoaHoc());
+  }, []);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
     setIsModalOpen(true);
@@ -47,34 +64,41 @@ const EditCourse = () => {
 
   const handleOk = () => {
     setIsModalOpen(false);
-    navigate("/admin/films");
+    navigate("/admin/courses");
   };
   useEffect(() => {
     dispatch(layThongTinKhoaHoc(String(params.id)));
   }, []);
-  const formik = useFormik({
-    enableReinitialize: true,
-    initialValues: {
-        maKhoaHoc: thongTinKhoaHoc?.maKhoaHoc,
-        biDanh:thongTinKhoaHoc?.biDanh,
-        tenKhoaHoc:thongTinKhoaHoc?.tenKhoaHoc,
-        moTa: thongTinKhoaHoc?.moTa,
-        luotXem: thongTinKhoaHoc?.luotXem,
+    const formik = useFormik({
+      initialValues: {
+        maKhoaHoc: "",
+        tenKhoaHoc: "",
+        moTa: "",
+        luotXem: 0,
+        danhGia: 0,
+        hinhAnh: {},
         maNhom: GROUPID,
-        ngayTao: moment(thongTinKhoaHoc?.ngayTao).format("DD/MM/YY"),
-        maDanhMucKhoaHoc: thongTinKhoaHoc?.danhMucKhoaHoc,
-        taiKhoanNguoiTao: thongTinKhoaHoc?.nguoiTao,
-        hinhAnh: null,
-    },
-    validationSchema: Yup.object({
+        ngayTao: "",
+        maDanhMucKhoaHoc: "",
+        taiKhoanNguoiTao: "",
+      },
+      validationSchema: Yup.object({
         maKhoaHoc: Yup.string().required("Mã khóa học không được để trống!"),
         tenKhoaHoc: Yup.string().required("Tên Phim không được để trống!"),
         moTa: Yup.string().required("mô tả không được để trống!"),
         danhGia: Yup.string().required("đánh giá không được để trống!"),
-        ngayTao: Yup.string().required(
-          "Ngày tạo chiếu không được để trống!"
-        ),
-    }),
+        luotXem: Yup.string().required("Lượt xem không được bỏ trống"),
+        ngayTao: Yup.date()
+          .transform(function (value, originalValue) {
+            if (this.isType(value)) {
+              return value;
+            }
+            const result = parse(originalValue, "dd.MM.yyyy", new Date());
+            return result;
+          })
+          .typeError("Ngày tạo không được để trống!")
+          .required("Ngày tạo không được để trống!"),
+      }),
     onSubmit: async (values: any) => {
       console.log("values", values);
       // tạo đối tượng formData
@@ -97,13 +121,16 @@ const EditCourse = () => {
     },
   });
   const handleSelectChange = (value: string) => {
-    formik.setFieldValue("maLoaiNguoiDung", value);
+    formik.setFieldValue("taiKhoanNguoiTao", value);
   };
-  const [layDanhMucKhoaHoc, setDanhMucKhoaHoc] = useState<LayDanhMucKhoaHoc[]>([]);
+
+  const handleSelectChangeDanhMuc = (value: string) => {
+    formik.setFieldValue("maDanhMucKhoaHoc", value);
+  };
+  // const [layDanhMucKhoaHoc, setDanhMucKhoaHoc] = useState<LayDanhMucKhoaHoc[]>([]);
   const handChangeDataPicker = (value: any) => {
-    let ngayTao = moment(value).format("DD/MM/YYYY");
-    formik.setFieldValue("ngayKhoiChieu", ngayTao);
-    console.log(ngayTao);
+    let ngayKhoiChieu = moment(value).format("DD/MM/YYYY");
+    formik.setFieldValue("ngayTao", ngayKhoiChieu);
   };
   // React.ChangeEvent<HTMLInputElement>
   const handleChangeFile = async (e: any) => {
@@ -163,7 +190,7 @@ const EditCourse = () => {
         <Form.Item label="Tên Khóa Học">
           <Input
             onChange={formik.handleChange}
-            name="tenPhim"
+            name="tenKhoaHoc"
             placeholder="Nhập vào tên khóa học"
             value={formik.values.tenKhoaHoc}
           />
@@ -181,29 +208,68 @@ const EditCourse = () => {
           {formik.errors.moTa && formik.touched && (
             <p className="text-red-500 mb-0">{formik.errors.moTa}</p>
           )}
-          </Form.Item>
+        </Form.Item>
+        <Form.Item label="Đánh giá">
+          <Input
+            onChange={formik.handleChange}
+            name="danhGia"
+            placeholder="Nhập vào đánh giá"
+            value={formik.values.danhGia}
+          />
+          {formik.errors.danhGia && formik.touched && (
+            <p className="text-red-500 mb-0">{formik.errors.danhGia}</p>
+          )}
+        </Form.Item>
+
+        <Form.Item label="Lượt xem">
+          <Input
+            onChange={formik.handleChange}
+            name="luotXem"
+            placeholder="Nhập vào lượt xem"
+            value={formik.values.luotXem}
+          />
+          {formik.errors.luotXem && formik.touched && (
+            <p className="text-red-500 mb-0">{formik.errors.luotXem}</p>
+          )}
+        </Form.Item>
         <Form.Item label="Ngày khỏi tạo">
           <DatePicker format={"DD/MM/YYYY"} onChange={handChangeDataPicker} />
           {formik.errors.ngayTao && formik.touched && (
             <p className="text-red-500 mb-0">{formik.errors.ngayTao}</p>
           )}
         </Form.Item>
+
         <Form.Item label="Danh Mục Khóa Học">
           <Select
-            onChange={handleSelectChange}
+            onChange={handleSelectChangeDanhMuc}
             placeholder="Chọn loại người dùng"
           >
-            {layDanhMucKhoaHoc.map((item) => (
-              <Select.Option
-                key={item.maDanhMuc}
-                value={`${item.maDanhMuc}`}
-              >
+            {danhMucKhoaHoc?.map((item) => (
+              <Select.Option key={item.maDanhMuc} value={`${item.maDanhMuc}`}>
                 {item.tenDanhMuc}
               </Select.Option>
             ))}
           </Select>
           {formik.errors.maDanhMucKhoaHoc && formik.touched && (
-            <p className="text-red-500 mb-0">{formik.errors.maDanhMucKhoaHoc}</p>
+            <p className="text-red-500 mb-0">
+              {formik.errors.maDanhMucKhoaHoc}
+            </p>
+          )}
+        </Form.Item>
+        <Form.Item label="Người tạo">
+          <Select onChange={handleSelectChange} placeholder="Chọn người tạo">
+            {arrDanhSachNguoiDung
+              ?.filter((item) => item.maLoaiNguoiDung === "GV")
+              .map((item) => (
+                <Select.Option key={item.taiKhoan} value={`${item.taiKhoan}`}>
+                  {item.taiKhoan}
+                </Select.Option>
+              ))}
+          </Select>
+          {formik.errors.taiKhoanNguoiTao && formik.touched && (
+            <p className="text-red-500 mb-0">
+              {formik.errors.taiKhoanNguoiTao}
+            </p>
           )}
         </Form.Item>
         <Form.Item label="Hình ảnh">
@@ -213,12 +279,8 @@ const EditCourse = () => {
           ) : (
             ""
           )}
-          <br />=
-          <img
-            src={imgSrc === "" ?thongTinKhoaHoc?.hinhAnh : imgSrc}
-            alt="..."
-            className="w-[100px] h-[100px]"
-          />
+          <br />
+          <img src={imgSrc} alt="..." className="w-[100px] h-[100px]" />
         </Form.Item>
 
         <Form.Item label="Tác vụ">
