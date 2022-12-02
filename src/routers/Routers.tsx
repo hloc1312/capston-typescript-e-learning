@@ -107,7 +107,7 @@ const Routers = () => {
       children: [
         {
           path: "login",
-          element: <Login />,
+          element: <Login />, // login
         },
         // {
         //   path: "register",
@@ -165,6 +165,7 @@ const Routers = () => {
       ],
     },
   ]);
+
   return routing;
 };
 
