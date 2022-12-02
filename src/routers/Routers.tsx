@@ -1,8 +1,12 @@
 import { Spin } from "antd";
 import React, { lazy, Suspense } from "react";
 import { Navigate, useRoutes } from "react-router-dom";
+import AdminLayout from "../components/Layouts/AdminTemplate/AdminTemplate";
 import HomeTemplate from "../components/Layouts/HomeTemplate/HomeTemplate";
 import Contact from "../pages/Contact/Contact";
+import Addcoure from "../pages/Coures/AddCourse/Addcourse";
+import Courses from "../pages/Coures/Courses";
+import EditCourse from "../pages/Coures/EditCourse/Editcourse";
 import CourseList from "../pages/CourseList/CourseList";
 import Detail from "../pages/Detail/Detail";
 import Home from "../pages/Home/Home";
@@ -146,25 +150,20 @@ const Routers = () => {
           path: "users/edituser/:id",
           element: <EditUser />,
         },
-        // {
-        //   path: "films",
-        //   element: <Films />,
-        // },
-        // {
-        //   path: "films/addfilm",
-        //   element: <AddFilm />,
-        // },
-        // {
-        //   path: "films/editfilm/:id",
-        //   element: <EditFilm />,
-        // },
-        // {
-        //   path: "films/showtimes/:id",
-        //   element: <ShowTime />,
-        // },
+        {
+          path: "courses",
+          element: <Courses />,
+        },
+        {
+          path: "courses/addcourse",
+          element: <Addcoure />,
+        },
+        {
+          path: "courses/editcourse/:id",
+          element: <EditCourse />,
+        },
       ],
     },
-    
   ]);
   return routing;
 };

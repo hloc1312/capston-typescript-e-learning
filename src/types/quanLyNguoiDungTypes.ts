@@ -11,12 +11,21 @@ export interface UserLogin {
   taiKhoan: string;
   matKhau: string;
 }
-export interface DanhSachNguoiDung {
+// export interface DanhSachNguoiDung {
+//   taiKhoan: string;
+//   hoTen: string;
+//   email: string;
+//   soDT: string;
+//   maNhom: string;
+//   matKhau: string;
+//   maLoaiNguoiDung: string;
+//   accessToken?: string;
+// }
+export interface arrDanhSachNguoiDung {
   taiKhoan: string;
   hoTen: string;
   email: string;
-  soDT: string;
-  matKhau: string;
+  soDt: string;
   maLoaiNguoiDung: string;
 }
 export interface LoaiNguoiDung {
@@ -27,7 +36,7 @@ export interface ThemNguoiDung {
   taiKhoan: string;
   matKhau: string;
   email: string;
-  soDt: string;
+  soDT: string;
   maNhom: string;
   maLoaiNguoiDung: string;
   hoTen: string;
@@ -35,11 +44,11 @@ export interface ThemNguoiDung {
 export interface CapNhatNguoiDung {
   taiKhoan: string;
   matKhau: string;
-  email: string;
-  soDt: string;
-  maNhom: string;
-  maLoaiNguoiDung: string;
   hoTen: string;
+  soDT: string;
+  maLoaiNguoiDung: string;
+  maNhom: string;
+  email: string;
 }
 export interface ThongTinTaiKhoan {
   chiTietKhoaHocGhiDanh: ChiTietKhoaHocGhiDanh[];
@@ -71,4 +80,14 @@ export interface CapNhatThongTinNguoiDung {
   maLoaiNguoiDung: string;
   maNhom: string;
   email: string;
+}
+
+export interface DanhSachNguoiDung {
+  taiKhoan: string;
+  hoTen: string;
+  email: string;
+  soDt: string;
+  matKhau: string;
+  maLoaiNguoiDung: string;
+  tenLoaiNguoiDung: string;
 }

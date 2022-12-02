@@ -1,5 +1,9 @@
 import { api } from "../constants/api";
-import { DangKyKhoaHoc, HuyGhiDanh } from "../types/quanLyKhoaHocTypes";
+import {
+  DangKyKhoaHoc,
+  HuyGhiDanh,
+  ThemKhoaHoc,
+} from "../types/quanLyKhoaHocTypes";
 import { GROUPID } from "../utils/config";
 
 export const quanLyKhoaHocService = {
@@ -38,5 +42,14 @@ export const quanLyKhoaHocService = {
 
   huyGhiDanh: (huyGhiDanh: HuyGhiDanh) => {
     return api.post(`QuanLyKhoaHoc/HuyGhiDanh`, huyGhiDanh);
+  },
+  xoaKhoaHoc: (maKhoaHoc: string) => {
+    return api.delete(`QuanLyKhoaHoc/XoaKhoaHoc?MaKhoaHoc=${maKhoaHoc}`);
+  },
+  themKhoaHocUploadHinh: (formData: ThemKhoaHoc) => {
+    return api.post(`QuanLyKhoaHoc/ThemKhoaHoc`, formData);
+  },
+  capNhatKhoaHocUpload: (formData: FormData) => {
+    return api.post(`QuanLyKhoaHoc/CapNhatKhoaHocUpload`, formData);
   },
 };

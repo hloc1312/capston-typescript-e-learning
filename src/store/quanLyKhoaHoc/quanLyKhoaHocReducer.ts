@@ -8,6 +8,7 @@ import {
   LayDanhSachKhoaHocPhanTrang,
   LayKhoaHocTheoDanhMuc,
   LayThongTinKhoaHoc,
+  ThemKhoaHoc,
 } from "../../types/quanLyKhoaHocTypes";
 import { thongTinTaiKhoanActions } from "../quanLyNguoiDung";
 
@@ -15,28 +16,31 @@ interface InitialState {
   danhSachKhoaHoc?: LayDanhSachKhoaHoc[];
   isFetchingDanhSachKhoaHoc: boolean;
   errDanhSachKhoaHoc: any;
-
   danhMucKhoaHoc?: LayDanhMucKhoaHoc[];
   isFetchingDanhMucKhoaHoc: boolean;
   errDanhMucKhoaHoc: any;
-
   danhSachKhoaHocPhanTrang?: LayDanhSachKhoaHocPhanTrang;
   isFetchingDanhSachKhoaHocPhanTrang: boolean;
   errDanhSachKhoaHocPhanTrang: any;
-
   danhSachKhoaHocTheoDanhMuc?: LayKhoaHocTheoDanhMuc[];
   isFetchingDanhSachKhoaHocTheoDanhMuc: boolean;
   errDanhSachKhoaHocTheoDanhMuc: any;
-
   thongTinKhoaHoc?: LayThongTinKhoaHoc;
   isFetchingThongTinKhoaHoc: boolean;
   errThongTinKhoaHoc: any;
-
   isFetchingDangKyKhoaHoc: boolean;
   errDangKyKhoaHoc: any;
-
   isFetchingHuyGhiDanh: boolean;
   errHuyGhiDanh: any;
+  isFetchingKhoaHoc: boolean;
+  errThemKhoaHoc: any;
+  isFetchingUploadKhoaHoc: boolean;
+  errUploadKhoaHoc: any;
+  isFetchingXoaKhoaHoc: boolean;
+  errXoaKhoaHoc: any;
+  isFetchingCapNhapKhoaHoc: boolean;
+  errCapNhatKhoaHoc: any;
+  isFetchingThemKhoaHoc: boolean;
 }
 
 const initialState: InitialState = {
@@ -58,6 +62,16 @@ const initialState: InitialState = {
 
   isFetchingHuyGhiDanh: false,
   errHuyGhiDanh: "",
+  isFetchingKhoaHoc: false,
+  isFetchingThemKhoaHoc: false,
+
+  errThemKhoaHoc: "",
+  isFetchingUploadKhoaHoc: false,
+  errUploadKhoaHoc: "",
+  isFetchingXoaKhoaHoc: false,
+  errXoaKhoaHoc: "",
+  isFetchingCapNhapKhoaHoc: false,
+  errCapNhatKhoaHoc: "",
 };
 export const { reducer: quanLyKhoaHocReducer, actions: quanLyKhoaHocAction } =
   createSlice({
@@ -147,15 +161,49 @@ export const { reducer: quanLyKhoaHocReducer, actions: quanLyKhoaHocAction } =
         .addCase(huyGhiDanhAction.rejected, (state, action) => {
           state.isFetchingHuyGhiDanh = false;
           state.errHuyGhiDanh = action.payload;
+        })
+        //xóa khóa học
+        .addCase(xoaKhoaHoc.pending, (state, action) => {
+          state.isFetchingXoaKhoaHoc = true;
+        })
+        .addCase(xoaKhoaHoc.fulfilled, (state, action) => {
+          state.isFetchingXoaKhoaHoc = false;
+        })
+        .addCase(xoaKhoaHoc.rejected, (state, action) => {
+          state.isFetchingXoaKhoaHoc = false;
+          state.errXoaKhoaHoc = action.payload;
+        })
+        //Cập nhật khóa học
+        .addCase(capNhatKhoaHocUpload.pending, (state, action) => {
+          state.isFetchingCapNhapKhoaHoc = true;
+        })
+        .addCase(capNhatKhoaHocUpload.fulfilled, (state, action) => {
+          state.isFetchingCapNhapKhoaHoc = false;
+        })
+        .addCase(capNhatKhoaHocUpload.rejected, (state, action) => {
+          state.isFetchingCapNhapKhoaHoc = false;
+          state.errCapNhatKhoaHoc = action.payload;
+        })
+        //thêm khóa học
+        .addCase(themKhoaHocUploadHinh.pending, (state, action) => {
+          state.isFetchingThemKhoaHoc = true;
+        })
+        .addCase(themKhoaHocUploadHinh.fulfilled, (state, action) => {
+          state.isFetchingThemKhoaHoc = false;
+          state.errThemKhoaHoc = "";
+        })
+        .addCase(themKhoaHocUploadHinh.rejected, (state, action) => {
+          state.isFetchingThemKhoaHoc = false;
+          state.errThemKhoaHoc = action.payload;
         });
     },
   });
 
 export const layDanhSachKhoaHoc = createAsyncThunk(
   "quanLyKhoaHoc/layDanhSachKhoaHoc",
-  async (tenPhim: string, { rejectWithValue }) => {
+  async (tenKhoaHoc: string, { rejectWithValue }) => {
     try {
-      const result = await quanLyKhoaHocService.layDanhSachKhoaHoc(tenPhim);
+      const result = await quanLyKhoaHocService.layDanhSachKhoaHoc(tenKhoaHoc);
       return result.data;
     } catch (err: any) {
       return rejectWithValue(err.response.data);
@@ -236,6 +284,53 @@ export const huyGhiDanhAction = createAsyncThunk(
       const result = await quanLyKhoaHocService.huyGhiDanh(huyGhiDanh);
       dispatch(thongTinTaiKhoanActions());
       return result.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+// export const getListCourse=createAsyncThunk(
+//   "quanLyKhoaHoc/getListCourse",
+//   async (tenKhoaHoc: string, { dispatch, getState, rejectWithValue }) => {
+//     try {
+//       const result = await quanLyKhoaHocService.layDanhSachKhoaHoc(tenKhoaHoc);
+//       return result.data.content;
+//     } catch (err: any) {
+//       return rejectWithValue(err.response.data);
+//     }
+//   }
+// )
+export const themKhoaHocUploadHinh = createAsyncThunk(
+  "quanLyKhoaHoc/themKhoaHocUploadHinh",
+  async (formData: ThemKhoaHoc, { rejectWithValue }) => {
+    try {
+      const result = await quanLyKhoaHocService.themKhoaHocUploadHinh(formData);
+      return result.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+export const capNhatKhoaHocUpload = createAsyncThunk(
+  "quanLyKhoaHoc/capNhatKhoaHocUpload",
+  async (formData: FormData, { dispatch, rejectWithValue }) => {
+    try {
+      const result = await quanLyKhoaHocService.capNhatKhoaHocUpload(formData);
+      await dispatch(layDanhSachKhoaHoc(""));
+      return result.data.content;
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const xoaKhoaHoc = createAsyncThunk(
+  "quanLyKhoaHoc/xoaKhoaHoc",
+  async (maKhoaHoc: string, { dispatch, rejectWithValue }) => {
+    try {
+      const result = await quanLyKhoaHocService.xoaKhoaHoc(maKhoaHoc);
+      dispatch(layDanhSachKhoaHoc(""));
+      return result.data.content;
     } catch (err: any) {
       return rejectWithValue(err.response.data);
     }

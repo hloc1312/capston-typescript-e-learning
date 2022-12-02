@@ -34,7 +34,7 @@ export const quanLyNguoiDungService = {
     return api.post(`QuanLyNguoiDung/ThemNguoiDung`, themNguoiDung);
   },
   capNhatThongTinNguoiDungAdmin: (thongTinNguoiDung: CapNhatNguoiDung) => {
-    return api.post(
+    return api.put(
       "QuanLyNguoiDung/CapNhatThongTinNguoiDung",
       thongTinNguoiDung
     );
@@ -49,6 +49,15 @@ export const quanLyNguoiDungService = {
     return api.put(
       `QuanLyNguoiDung/CapNhatThongTinNguoiDung`,
       capNhapThongTinNguoiDung
+    );
+  },
+
+  timKiemNguoiDung: (tenNguoiDung: string = "") => {
+    if (tenNguoiDung === "") {
+      return api.get(`QuanLyNguoiDung/TimKiemNguoiDung?MaNhom=${GROUPID}`);
+    }
+    return api.get(
+      `QuanLyNguoiDung/TimKiemNguoiDung?MaNhom=${GROUPID}&tuKhoa=${tenNguoiDung}`
     );
   },
 };

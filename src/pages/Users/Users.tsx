@@ -20,11 +20,12 @@ import { useSelector } from "react-redux";
 import { RootState, useAppDispath } from "../../store/configStore";
 // import { getListMovie, xoaPhim } from "../../store/quanLyPhim";
 import { LayDanhSachKhoaHoc } from "../../types/quanLyKhoaHocTypes";
-import noImages from "../../assets/images/noImages.jpg";
+// import noImages from "../../assets/images/noImages.jpg";
 import { NavLink, useNavigate } from "react-router-dom";
 import { DanhSachNguoiDung } from "../../types/quanLyNguoiDungTypes";
 import {
   danhSachNguoiDungAction,
+  timKiemNguoiDungAcTion,
   xoaNguoiDung,
 } from "../../store/quanLyNguoiDung";
 
@@ -32,17 +33,18 @@ interface DataType {
   taiKhoan: string;
   hoTen: string;
   email: string;
-  soDT: string;
+  soDt: string;
   matKhau: string;
   maLoaiNguoiDung: string;
   id?: number;
+  tenLoaiNguoiDung: string;
 }
 
 const Users = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenXoaNguoiDung, setIsModalOpenXoaNguoiDung] = useState(false);
-  console.log({ isModalOpenXoaNguoiDung });
+  // console.log({ isModalOpenXoaNguoiDung });
   const showModalXoaNguoiDung = () => {
     setIsModalOpenXoaNguoiDung(true);
   };
@@ -72,24 +74,24 @@ const Users = () => {
       return state.quanLyNguoiDungReducer;
     }
   );
-  console.log({ errXoaNguoiDung });
+  
 
   const findTaiKhoan = danhSachNguoiDung.find(
     (item) => item.taiKhoan === taiKhoanDelete
   );
-  console.log({ findTaiKhoan });
+  // console.log({ findTaiKhoan });
 
   const dispatch = useAppDispath();
   const { Search } = Input;
   const onSearch = (value: string) => {
-    dispatch(danhSachNguoiDungAction(value));
+    dispatch(timKiemNguoiDungAcTion(value));
   };
 
   const id = danhSachNguoiDung?.map((item, index) => ({
     ...item,
     id: index + 1,
   }));
-  // console.log({ id });
+  console.log({ id });
   const columns: ColumnsType<DataType> = [
     {
       title: "STT",
@@ -158,10 +160,10 @@ const Users = () => {
     },
     {
       title: "Số điện thoại",
-      dataIndex: "soDT",
+      dataIndex: "soDt",
       sorter: (a, b) => {
-        const soDtA = a.soDT.toLocaleLowerCase().trim();
-        const soDtB = b.soDT.toLocaleLowerCase().trim();
+        const soDtA = a.soDt.toLocaleLowerCase().trim();
+        const soDtB = b.soDt.toLocaleLowerCase().trim();
         if (soDtA > soDtB) {
           return 1;
         }
@@ -173,7 +175,7 @@ const Users = () => {
     },
     {
       title: "Hành động",
-      dataIndex: "maPhim",
+      dataIndex: "",
 
       render: (text, user) => {
         return (
@@ -213,7 +215,7 @@ const Users = () => {
   };
 
   useEffect(() => {
-    dispatch(danhSachNguoiDungAction(""));
+    dispatch(timKiemNguoiDungAcTion(""));
   }, []);
   return (
     <div>

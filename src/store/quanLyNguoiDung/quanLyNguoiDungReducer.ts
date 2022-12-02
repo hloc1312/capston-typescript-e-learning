@@ -1,6 +1,16 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { create } from "domain";
 import { quanLyNguoiDungService } from "../../services/quanLyNguoiDungService";
-import { CapNhatNguoiDung, CapNhatThongTinNguoiDung, DanhSachNguoiDung, ThemNguoiDung, ThongTinTaiKhoan, User, UserLogin } from "../../types/quanLyNguoiDungTypes";
+import {
+  arrDanhSachNguoiDung,
+  CapNhatNguoiDung,
+  CapNhatThongTinNguoiDung,
+  DanhSachNguoiDung,
+  ThemNguoiDung,
+  ThongTinTaiKhoan,
+  User,
+  UserLogin,
+} from "../../types/quanLyNguoiDungTypes";
 import { TOKEN, USER_LOGIN } from "../../utils/config";
 let userLocalStorage = {};
 interface InitialState {
@@ -29,6 +39,11 @@ interface InitialState {
 
   isFetchingCapNhatThongTinNguoiDung: boolean;
   errCapNhatThongTinNguoiDung: any;
+  arrDanhSachNguoiDung: arrDanhSachNguoiDung[];
+  isFetchingArrDanhSachNguoiDung: boolean;
+  errArrDanhSachNguoiDung: any;
+  isFetchingCapNhatAdmin: boolean;
+  errCapNhatAdmin: any;
 }
 if (localStorage.getItem(USER_LOGIN)) {
   userLocalStorage = JSON.parse(localStorage.getItem(USER_LOGIN) as string);
@@ -39,22 +54,11 @@ const initialState: InitialState = {
   user: userLocalStorage,
   errThongTinNguoiDung: "",
   isFetchingThongTinNguoiDung: false,
-  // isFetchingRegister: false,
-  // errRegister: "",
+
   isFetchingCapNhat: false,
   errCapNhat: "",
   isFetchingDSNguoiDung: false,
   errDSNguoiDung: "",
-  danhSachNguoiDung: [
-    {
-      taiKhoan: "test1312",
-      hoTen: "hello1312",
-      email: "abcHello13121@gmail.com",
-      soDT: "0909123123",
-      matKhau: "1312",
-      maLoaiNguoiDung: "QuanTri",
-    },
-  ],
 
   isFetchingXoaNguoiDung: false,
   errXoaNguoiDung: "",
@@ -63,12 +67,36 @@ const initialState: InitialState = {
   isFetchingCapNhatNguoiDungAdmin: false,
   errCapNhatNguoiDungAdmin: "",
   isFetchingRegister: false,
-  errRegister: undefined,
+  errRegister: "",
   isFetchingThongTinTaiKhoan: false,
-  errThongTinTaiKhoan: undefined,
+  errThongTinTaiKhoan: "",
   isFetchingCapNhatThongTinNguoiDung: false,
-  errCapNhatThongTinNguoiDung: undefined
-}
+  errCapNhatThongTinNguoiDung: "",
+  arrDanhSachNguoiDung: [
+    {
+      taiKhoan: "123",
+      hoTen: "phongggg",
+      email: "asdfasdf@gmail.com",
+      soDt: "0926999351",
+      maLoaiNguoiDung: "GV",
+    },
+  ],
+  danhSachNguoiDung: [
+    {
+      taiKhoan: "17211quang",
+      hoTen: "Kiet123",
+      email: "hienkiet@gmail.com",
+      soDt: "0326543543",
+      matKhau: "Dragon123",
+      maLoaiNguoiDung: "HV",
+      tenLoaiNguoiDung: "Học viên",
+    },
+  ],
+  isFetchingArrDanhSachNguoiDung: false,
+  errArrDanhSachNguoiDung: "",
+  isFetchingCapNhatAdmin: false,
+  errCapNhatAdmin: "",
+};
 
 export const {
   reducer: quanLyNguoiDungReducer,
@@ -121,6 +149,54 @@ export const {
       .addCase(capNhatThongTinNguoiDungActions.rejected, (state, action) => {
         state.isFetchingCapNhatThongTinNguoiDung = false;
         state.errCapNhatThongTinNguoiDung = action.payload;
+      })
+      // arrDanhSachNguoiDung
+      .addCase(danhSachNguoiDungAction.pending, (state, action) => {
+        state.isFetchingArrDanhSachNguoiDung = true;
+      })
+      .addCase(danhSachNguoiDungAction.fulfilled, (state, action) => {
+        state.isFetchingArrDanhSachNguoiDung = false;
+        state.arrDanhSachNguoiDung = action.payload;
+      })
+      .addCase(danhSachNguoiDungAction.rejected, (state, action) => {
+        state.isFetchingArrDanhSachNguoiDung = false;
+        state.errArrDanhSachNguoiDung = action.payload;
+      })
+      // TÌm kiếm người dùng
+      .addCase(timKiemNguoiDungAcTion.pending, (state, action) => {
+        state.isFetchingDSNguoiDung = true;
+      })
+      .addCase(timKiemNguoiDungAcTion.fulfilled, (state, action) => {
+        state.isFetchingDSNguoiDung = false;
+        state.danhSachNguoiDung = action.payload;
+      })
+      .addCase(timKiemNguoiDungAcTion.rejected, (state, action) => {
+        state.isFetchingDSNguoiDung = false;
+        state.errArrDanhSachNguoiDung = action.payload;
+      })
+      // thêm người dùng
+      .addCase(themNguoiDung.pending, (state, action) => {
+        state.isFetchingThemNguoiDung = true;
+      })
+      .addCase(themNguoiDung.fulfilled, (state, action) => {
+        state.isFetchingThemNguoiDung = false;
+        state.errThemNguoiDung = "";
+      })
+      .addCase(themNguoiDung.rejected, (state, action) => {
+        state.isFetchingThemNguoiDung = false;
+        state.errThemNguoiDung = action.payload;
+      })
+      // cập nhật người dùng
+      .addCase(capNhatNguoiDungAdmin.pending, (state, action) => {
+        state.isFetchingCapNhatAdmin = true;
+      })
+      .addCase(capNhatNguoiDungAdmin.fulfilled, (state, action) => {
+        state.isFetchingCapNhatAdmin = false;
+        state.errCapNhatAdmin = "";
+      })
+      .addCase(capNhatNguoiDungAdmin.rejected, (state, action) => {
+        state.isFetchingCapNhatAdmin = false;
+        state.errCapNhatAdmin = action.payload;
       });
   },
   //     initialState,
@@ -166,11 +242,11 @@ export const danhSachNguoiDungAction = createAsyncThunk(
   async (timKiem: string, { rejectWithValue }) => {
     try {
       const result = await quanLyNguoiDungService.layDanhSachNguoiDung(timKiem);
-      return result.data.content;
+      return result.data;
     } catch (err: any) {
       return rejectWithValue(err.response.data);
     }
-  }, 
+  }
 );
 export const xoaNguoiDung = createAsyncThunk(
   "quanLyNguoiDung/xoaNguoiDung",
@@ -189,7 +265,7 @@ export const themNguoiDung = createAsyncThunk(
   async (themNguoiDung: ThemNguoiDung, { dispatch, rejectWithValue }) => {
     try {
       const result = await quanLyNguoiDungService.themNguoiDung(themNguoiDung);
-      return result.data.content;
+      return result.data;
     } catch (err: any) {
       return rejectWithValue(err.response.data);
     }
@@ -206,7 +282,7 @@ export const capNhatNguoiDungAdmin = createAsyncThunk(
         thongTinNguoiDung
       );
       dispatch(danhSachNguoiDungAction(""));
-      return result.data.content;
+      return result.data;
     } catch (err: any) {
       return rejectWithValue(err.response.data);
     }
@@ -242,4 +318,14 @@ export const capNhatThongTinNguoiDungActions = createAsyncThunk(
   }
 );
 
-
+export const timKiemNguoiDungAcTion = createAsyncThunk(
+  "quanLyNguoiDung/timKiemNguoiDung",
+  async (data: string, { rejectWithValue }) => {
+    try {
+      const result = await quanLyNguoiDungService.timKiemNguoiDung(data);
+      return result.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response);
+    }
+  }
+);

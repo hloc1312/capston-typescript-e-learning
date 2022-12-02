@@ -1,5 +1,5 @@
 import { Button, Form, Input, Modal, Select } from "antd";
-import { useFormik } from "formik";
+import {useFormik} from "formik";
 import React, { useEffect, useState } from "react";
 import { quanLyNguoiDungService } from "../../../services/quanLyNguoiDungService";
 import { LoaiNguoiDung } from "../../../types/quanLyNguoiDungTypes";
@@ -24,7 +24,7 @@ const AddUser = () => {
       taiKhoan: "",
       matKhau: "",
       email: "",
-      soDt: "",
+      soDT: "",
       maNhom: GROUPID,
       maLoaiNguoiDung: "",
       hoTen: "",
@@ -36,7 +36,7 @@ const AddUser = () => {
       email: Yup.string()
         .email("Email không đúng định dạng")
         .required("Email không được bỏ trống!"),
-      soDt: Yup.string()
+      soDT: Yup.string()
         .matches(phoneRegExp, "Định dạng số điện thoại không đúng!")
         .required("Số điện thoại không được bỏ trống!"),
       maLoaiNguoiDung: Yup.string().required(
@@ -74,17 +74,20 @@ const AddUser = () => {
   const { errThemNguoiDung } = useSelector((state: RootState) => {
     return state.quanLyNguoiDungReducer;
   });
+  
 
   useEffect(() => {
     (async () => {
       try {
         const result = await quanLyNguoiDungService.layDanhSachLoaiNguoiDung();
-        setLoaiNguoiDung(result.data.content);
+        setLoaiNguoiDung(result.data);
       } catch (err) {
         console.log("err", err);
       }
     })();
   }, []);
+
+  console.log({errThemNguoiDung})
 
   return (
     <div>
@@ -140,12 +143,12 @@ const AddUser = () => {
         </Form.Item>
         <Form.Item label="Số điện thoại">
           <Input
-            value={formik.values.soDt}
+            value={formik.values.soDT}
             onChange={formik.handleChange}
-            name="soDt"
+            name="soDT"
           />
-          {formik.errors.soDt && formik.touched && (
-            <p className="text-red-500 mb-0">{formik.errors.soDt}</p>
+          {formik.errors.soDT && formik.touched && (
+            <p className="text-red-500 mb-0">{formik.errors.soDT}</p>
           )}
         </Form.Item>
         <Form.Item label="Loại người dùng">
@@ -153,7 +156,7 @@ const AddUser = () => {
             onChange={handleSelectChange}
             placeholder="Chọn loại người dùng"
           >
-            {loaiNguoiDung.map((item) => (
+            {loaiNguoiDung?.map((item) => (
               <Select.Option
                 key={item.maLoaiNguoiDung}
                 value={`${item.maLoaiNguoiDung}`}
@@ -229,7 +232,7 @@ const AddUser = () => {
             />
             <br />
             <p className="uppercase text-red-500 font-bold text-3xl">
-              {errThemNguoiDung.content}
+              {errThemNguoiDung}
             </p>
           </div>
         </Modal>

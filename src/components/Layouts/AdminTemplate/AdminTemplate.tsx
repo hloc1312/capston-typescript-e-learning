@@ -71,7 +71,7 @@ const AdminTemplate = () => {
     // alert("Bạn không có quyền truy cập trang này!");
     return <Navigate to="/home"></Navigate>;
   }
-  if (user?.maLoaiNguoiDung !== "QuanTri") {
+  if (user?.maLoaiNguoiDung !== "GV") {
     // alert("Bạn không có quyền truy cập trang này!");
     return <Navigate to="/home"></Navigate>;
   }
@@ -102,29 +102,14 @@ const AdminTemplate = () => {
                 </Menu.Item>
               </SubMenu>
 
-              {/* <SubMenu key="sub1" icon={<FileOutlined />} title="Films">
+              <SubMenu key="sub1" icon={<FileOutlined />} title="Courses">
                 <Menu.Item key="10" icon={<FileOutlined />}>
-                  <NavLink to="/admin/films">Films</NavLink>
+                  <NavLink to="/admin/courses">Courses</NavLink>
                 </Menu.Item>
                 <Menu.Item key="11" icon={<FileOutlined />}>
-                  <NavLink to="/admin/films/addfilm">Add new</NavLink>
+                  <NavLink to="/admin/courses/addcourse">Add new</NavLink>
                 </Menu.Item>
-              </SubMenu> */}
-              {/* <Menu.Item key="3" icon={<DesktopOutlined />}>
-                <NavLink to="/admin/showtimes">Showtime</NavLink>
-              </Menu.Item> */}
-              {/* <SubMenu key="sub1" icon={<UserOutlined />} title="User">
-                            <Menu.Item key="3">Tom</Menu.Item>
-                            <Menu.Item key="4">Bill</Menu.Item>
-                            <Menu.Item key="5">Alex</Menu.Item>
-                        </SubMenu>
-                        <SubMenu key="sub2" icon={<TeamOutlined />} title="Team">
-                            <Menu.Item key="6">Team 1</Menu.Item>
-                            <Menu.Item key="8">Team 2</Menu.Item>
-                        </SubMenu>
-                        <Menu.Item key="9" icon={<FileOutlined />}>
-                            Files
-                        </Menu.Item> */}
+              </SubMenu>
             </Menu>
           </Sider>
           <Layout className="site-layout">

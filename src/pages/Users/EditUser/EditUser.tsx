@@ -10,6 +10,7 @@ import {
   capNhatNguoiDungAdmin,
   danhSachNguoiDungAction,
   themNguoiDung,
+  timKiemNguoiDungAcTion,
 } from "../../../store/quanLyNguoiDung";
 import { CheckCircleFilled, CloseCircleFilled } from "@ant-design/icons";
 import { useSelector } from "react-redux";
@@ -22,37 +23,26 @@ const EditUser = () => {
   );
   const dispatch = useAppDispath();
   const params = useParams();
-  const { errCapNhatNguoiDungAdmin, danhSachNguoiDung } = useSelector(
+  const { errCapNhatAdmin, danhSachNguoiDung } = useSelector(
     (state: RootState) => {
       return state.quanLyNguoiDungReducer;
     }
   );
 
-  //   let thongTinUser = {
-  //     email: "706@gmail.com",
-  //     hoTen: "Canh Canh",
-  //     id: 9,
-  //     maLoaiNguoiDung: "KhachHang",
-  //     matKhau: "qq",
-  //     soDT: "096914638533",
-  //     taiKhoan: "qq",
-  //   };
-  //   if (localStorage.getItem("user")) {
-  //     thongTinUser = JSON.parse(localStorage.getItem("user") as string);
-  //   }
   console.log({ danhSachNguoiDung });
   const phoneRegExp = /^(84|0[3|5|7|8|9])+([0-9]{8})\b$/;
   const navigate = useNavigate();
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      taiKhoan: danhSachNguoiDung[0].taiKhoan,
-      matKhau: danhSachNguoiDung[0].matKhau,
-      email: danhSachNguoiDung[0].email,
-      soDt: danhSachNguoiDung[0].soDT,
+      taiKhoan: danhSachNguoiDung[0]?.taiKhoan,
+      matKhau: danhSachNguoiDung[0]?.matKhau,
+      email: danhSachNguoiDung[0]?.email,
+      soDT: danhSachNguoiDung[0]?.soDt,
       maNhom: GROUPID,
-      maLoaiNguoiDung: danhSachNguoiDung[0].maLoaiNguoiDung,
-      hoTen: danhSachNguoiDung[0].hoTen,
+      maLoaiNguoiDung: danhSachNguoiDung[0]?.maLoaiNguoiDung,
+      hoTen: danhSachNguoiDung[0]?.hoTen,
+ 
     },
     validationSchema: Yup.object({
       taiKhoan: Yup.string().required("Tài khoản không được bỏ trống!"),
@@ -61,7 +51,7 @@ const EditUser = () => {
       email: Yup.string()
         .email("Email không đúng định dạng")
         .required("Email không được bỏ trống!"),
-      soDt: Yup.string()
+      soDT: Yup.string()
         .matches(phoneRegExp, "Định dạng số điện thoại không đúng!")
         .required("Số điện thoại không được bỏ trống!"),
       maLoaiNguoiDung: Yup.string().required(
@@ -97,14 +87,14 @@ const EditUser = () => {
   };
 
   useEffect(() => {
-    dispatch(danhSachNguoiDungAction(params.id as string));
+    dispatch(timKiemNguoiDungAcTion(params.id as string));
   }, []);
 
   useEffect(() => {
     (async () => {
       try {
         const result = await quanLyNguoiDungService.layDanhSachLoaiNguoiDung();
-        setLoaiNguoiDung(result.data.content);
+        setLoaiNguoiDung(result.data);
       } catch (err) {
         console.log("err", err);
       }
@@ -125,7 +115,7 @@ const EditUser = () => {
       >
         <Form.Item label="Tài khoản">
           <Input
-            value={formik.values.taiKhoan}
+            value={formik.values?.taiKhoan}
             onChange={formik.handleChange}
             name="taiKhoan"
             disabled
@@ -136,7 +126,7 @@ const EditUser = () => {
         </Form.Item>
         <Form.Item label="Mật khẩu">
           <Input.Password
-            value={formik.values.matKhau}
+            value={formik.values?.matKhau}
             onChange={formik.handleChange}
             name="matKhau"
           />
@@ -146,7 +136,7 @@ const EditUser = () => {
         </Form.Item>
         <Form.Item label="Họ tên">
           <Input
-            value={formik.values.hoTen}
+            value={formik.values?.hoTen}
             onChange={formik.handleChange}
             name="hoTen"
           />
@@ -156,7 +146,7 @@ const EditUser = () => {
         </Form.Item>
         <Form.Item label="Email">
           <Input
-            value={formik.values.email}
+            value={formik.values?.email}
             onChange={formik.handleChange}
             name="email"
           />
@@ -166,19 +156,19 @@ const EditUser = () => {
         </Form.Item>
         <Form.Item label="Số điện thoại">
           <Input
-            value={formik.values.soDt}
+            value={formik.values?.soDT}
             onChange={formik.handleChange}
-            name="soDt"
+            name="soDT"
           />
-          {formik.errors.soDt && formik.touched && (
-            <p className="text-red-500 mb-0">{formik.errors.soDt}</p>
+          {formik.errors.soDT && formik.touched && (
+            <p className="text-red-500 mb-0">{formik.errors.soDT}</p>
           )}
         </Form.Item>
         <Form.Item label="Loại người dùng">
           <Select
             onChange={handleSelectChange}
             placeholder="Chọn loại người dùng"
-            value={formik.values.maLoaiNguoiDung}
+            value={formik.values?.maLoaiNguoiDung}
           >
             {loaiNguoiDung.map((item) => (
               <Select.Option
@@ -200,7 +190,7 @@ const EditUser = () => {
         </Form.Item>
       </Form>
 
-      {errCapNhatNguoiDungAdmin === "" ? (
+      {errCapNhatAdmin === "" ? (
         <Modal
           title={<span className="text-green-500">Cập nhật thành công</span>}
           open={isModalOpenCapNhatNguoiDung}
@@ -256,7 +246,7 @@ const EditUser = () => {
             />
             <br />
             <p className="uppercase text-red-500 font-bold text-3xl">
-              {errCapNhatNguoiDungAdmin.content}
+              {errCapNhatAdmin}
             </p>
           </div>
         </Modal>

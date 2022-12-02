@@ -108,3 +108,17 @@ export interface HuyGhiDanh {
   maKhoaHoc: string;
   taiKhoan: string;
 }
+
+export interface ThemKhoaHoc {
+  maKhoaHoc: string;
+  biDanh: string;
+  tenKhoaHoc: string;
+  moTa: string;
+  luotXem: number;
+  danhGia: number;
+  hinhAnh: string;
+  maNhom: string;
+  ngayTao: string;
+  maDanhMucKhoaHoc: string;
+  taiKhoanNguoiTao: string;
+}
