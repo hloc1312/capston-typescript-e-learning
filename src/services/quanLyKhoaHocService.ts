@@ -1,5 +1,7 @@
 import { api } from "../constants/api";
+import { capNhatKhoaHocAction } from "../store/quanLyKhoaHoc/quanLyKhoaHocReducer";
 import {
+  capNhatKhoaHoc,
   DangKyKhoaHoc,
   HuyGhiDanh,
   ThemKhoaHoc,
@@ -49,8 +51,10 @@ export const quanLyKhoaHocService = {
   themKhoaHocUploadHinh: (formData: ThemKhoaHoc) => {
     return api.post(`QuanLyKhoaHoc/ThemKhoaHoc`, formData);
   },
-  capNhatKhoaHocUpload: (formData: FormData) => {
-    return api.post(`QuanLyKhoaHoc/CapNhatKhoaHocUpload`, formData);
+  capNhatKhoaHoc:(
+    capNhatKhoaHoc:capNhatKhoaHoc
+  )=>{
+    return api.put('QuanLyKhoaHoc/CapNhatKhoaHoc',capNhatKhoaHoc);
   },
 
   uploadHinhAnhKhoaHoc: (formData: FormData) => {

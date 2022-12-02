@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { quanLyKhoaHocService } from "../../services/quanLyKhoaHocService";
 import {
+  capNhatKhoaHoc,
   DangKyKhoaHoc,
   HuyGhiDanh,
   LayDanhMucKhoaHoc,
@@ -44,6 +45,8 @@ interface InitialState {
 
   isFetchingUploadHinhAnhCapNhat: boolean;
   errUploadHinhAnhCapNhat: any;
+  // isFetchingCapNhatKhoaHoc:boolean;
+  // errCapNhatKhoaHoc:any;
 }
 
 const initialState: InitialState = {
@@ -180,13 +183,13 @@ export const { reducer: quanLyKhoaHocReducer, actions: quanLyKhoaHocAction } =
           state.errXoaKhoaHoc = action.payload;
         })
         //Cập nhật khóa học
-        .addCase(capNhatKhoaHocUpload.pending, (state, action) => {
+        .addCase(capNhatKhoaHocAction.pending, (state, action) => {
           state.isFetchingCapNhapKhoaHoc = true;
         })
-        .addCase(capNhatKhoaHocUpload.fulfilled, (state, action) => {
+        .addCase(capNhatKhoaHocAction.fulfilled, (state, action) => {
           state.isFetchingCapNhapKhoaHoc = false;
         })
-        .addCase(capNhatKhoaHocUpload.rejected, (state, action) => {
+        .addCase(capNhatKhoaHocAction.rejected, (state, action) => {
           state.isFetchingCapNhapKhoaHoc = false;
           state.errCapNhatKhoaHoc = action.payload;
         })
@@ -329,18 +332,35 @@ export const themKhoaHocUploadHinh = createAsyncThunk(
     }
   }
 );
-export const capNhatKhoaHocUpload = createAsyncThunk(
-  "quanLyKhoaHoc/capNhatKhoaHocUpload",
-  async (formData: FormData, { dispatch, rejectWithValue }) => {
+export const capNhatKhoaHocAction = createAsyncThunk(
+  "quanLyKhoaHoc/capNhatKhoaHoc",
+  async (data: capNhatKhoaHoc, { dispatch,getState, rejectWithValue }) => {
     try {
-      const result = await quanLyKhoaHocService.capNhatKhoaHocUpload(formData);
-      await dispatch(layDanhSachKhoaHoc(""));
+      const result = await quanLyKhoaHocService.capNhatKhoaHoc(data);
+      await dispatch(layThongTinKhoaHoc(""));
       return result.data.content;
     } catch (err: any) {
       return rejectWithValue(err.response.data);
     }
   }
 );
+// export const capNhatThongTinNguoiDungActions = createAsyncThunk(
+//   "quanLyNguoiDung/capNhatThongTinNguoiDung",
+//   async (
+//     data: CapNhatThongTinNguoiDung,
+//     { dispatch, getState, rejectWithValue }
+//   ) => {
+//     try {
+//       const result = await quanLyNguoiDungService.capNhatThongTinNguoiDung(
+//         data
+//       );
+//       dispatch(thongTinTaiKhoanActions());
+//       return result.data;
+//     } catch (err: any) {
+//       return rejectWithValue(err.response.data);
+//     }
+//   }
+// );
 
 export const xoaKhoaHoc = createAsyncThunk(
   "quanLyKhoaHoc/xoaKhoaHoc",
