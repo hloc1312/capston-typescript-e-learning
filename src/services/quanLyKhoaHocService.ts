@@ -52,4 +52,8 @@ export const quanLyKhoaHocService = {
   capNhatKhoaHocUpload: (formData: FormData) => {
     return api.post(`QuanLyKhoaHoc/CapNhatKhoaHocUpload`, formData);
   },
+
+  uploadHinhAnhKhoaHoc: (formData: FormData) => {
+    return api.post(`QuanLyKhoaHoc/UploadHinhAnhKhoaHoc`, formData);
+  },
 };

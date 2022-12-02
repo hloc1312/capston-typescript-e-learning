@@ -12,7 +12,7 @@ import {
   Switch,
   TreeSelect,
 } from "antd";
-import { CheckCircleFilled } from "@ant-design/icons";
+import { CheckCircleFilled, CloseCircleFilled } from "@ant-design/icons";
 import { useFormik } from "formik";
 import moment from "moment";
 import * as Yup from "yup";
@@ -26,6 +26,7 @@ import { LayDanhMucKhoaHoc } from "../../../types/quanLyKhoaHocTypes";
 import {
   layDanhMucKhoaHoc,
   themKhoaHocUploadHinh,
+  uploadHinhAnhAction,
 } from "../../../store/quanLyKhoaHoc/quanLyKhoaHocReducer";
 import { danhSachNguoiDungAction } from "../../../store/quanLyNguoiDung";
 import Item from "antd/lib/list/Item";
@@ -37,6 +38,7 @@ const Addcoure = () => {
   const [imgSrc, setImgSrc] = useState("");
   const [errSrcImg, setErrSrcImg] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpenErr, setIsModalOpenErr] = useState(false);
   const navigate = useNavigate();
   const showModal = () => {
     setIsModalOpen(true);
@@ -47,11 +49,24 @@ const Addcoure = () => {
     setIsModalOpen(false);
     // dispatch(xoaPhim(findMaPhim?.maPhim as number));
   };
-  const { isFetchingKhoaHoc, danhMucKhoaHoc, errThemKhoaHoc } = useSelector(
-    (state: RootState) => {
-      return state.quanLyKhoaHocReducer;
-    }
-  );
+
+  const showModalErr = () => {
+    setIsModalOpenErr(true);
+  };
+
+  const handleOkErr = () => {
+    setIsModalOpenErr(false);
+    // dispatch(xoaPhim(findMaPhim?.maPhim as number));
+  };
+  const {
+    isFetchingKhoaHoc,
+    danhMucKhoaHoc,
+    errThemKhoaHoc,
+
+    errUploadHinhAnhCapNhat,
+  } = useSelector((state: RootState) => {
+    return state.quanLyKhoaHocReducer;
+  });
   const { arrDanhSachNguoiDung } = useSelector((state: RootState) => {
     return state.quanLyNguoiDungReducer;
   });
@@ -62,12 +77,15 @@ const Addcoure = () => {
   useEffect(() => {
     dispatch(layDanhMucKhoaHoc());
   }, []);
+
+  const [fileHinh, setFileHinh] = useState<any>();
   const dispatch = useAppDispath();
   const formik = useFormik({
     initialValues: {
       maKhoaHoc: "",
       tenKhoaHoc: "",
       moTa: "",
+      biDanh: "",
       luotXem: 0,
       danhGia: 0,
       hinhAnh: {},
@@ -78,6 +96,7 @@ const Addcoure = () => {
     },
     validationSchema: Yup.object({
       maKhoaHoc: Yup.string().required("Mã khóa học không được để trống!"),
+      biDanh: Yup.string().required("Bí danh không được để trống!"),
       tenKhoaHoc: Yup.string().required("Tên Phim không được để trống!"),
       moTa: Yup.string().required("mô tả không được để trống!"),
       danhGia: Yup.string().required("đánh giá không được để trống!"),
@@ -93,11 +112,14 @@ const Addcoure = () => {
         .typeError("Ngày tạo không được để trống!")
         .required("Ngày tạo không được để trống!"),
     }),
-    onSubmit: (values: any) => {
+    onSubmit: async (values: any) => {
       console.log("values", values);
-      // values.hinhAnh.name;
+
       // tạo đối tượng formData
       // let formData = new FormData();
+      // formData.append("hinhAnh", values.hinhAnh, values.hinhAnh.name);
+      // formData.append("tenKhoaHoc", values.tenKhoaHoc);
+
       // for (let key in values) {
       //   if (key === "hinhAnh") {
       //     formData.append("hinhAnh", values.hinhAnh, values.hinhAnh.name);
@@ -105,11 +127,25 @@ const Addcoure = () => {
       //   formData.append(key, values[key]);
       // }
       // console.log(formData.get("maNhom"));
-      dispatch(themKhoaHocUploadHinh(values))
-        .unwrap()
-        .then(() => {
-          showModal();
-        });
+      try {
+        await dispatch(themKhoaHocUploadHinh(values))
+          .unwrap()
+          .then((result) => {});
+
+        let formData = new FormData();
+        console.log(fileHinh.name);
+        formData.append("hinhAnh", fileHinh, fileHinh.name);
+        formData.append("tenKhoaHoc", values.tenKhoaHoc);
+        await dispatch(uploadHinhAnhAction(formData))
+          .unwrap()
+          .then(() => {
+            showModal();
+          });
+      } catch (err: any) {
+        showModalErr();
+      }
+
+      // dispatch(uploadHinhAnhAction(formData));
     },
   });
   const handleSelectChange = (value: string) => {
@@ -145,11 +181,13 @@ const Addcoure = () => {
       // console.log(file);
       // Đem file vào formik
       setErrSrcImg("");
+      setFileHinh(file);
       formik.setFieldValue("hinhAnh", file.name);
     } else {
       setErrSrcImg("Không hỗ trợ định dạng file này");
     }
   };
+
   if (isFetchingKhoaHoc) {
     return <Loading />;
   }
@@ -177,6 +215,17 @@ const Addcoure = () => {
           />
           {formik.errors.maKhoaHoc && formik.touched && (
             <p className="text-red-500 mb-0">{formik.errors.maKhoaHoc}</p>
+          )}
+        </Form.Item>
+        <Form.Item label="Bí danh">
+          <Input
+            onChange={formik.handleChange}
+            name="biDanh"
+            placeholder="Nhập vào bí danh"
+            value={formik.values.biDanh}
+          />
+          {formik.errors.biDanh && formik.touched && (
+            <p className="text-red-500 mb-0">{formik.errors.biDanh}</p>
           )}
         </Form.Item>
         <Form.Item label="Tên Khóa Học">
@@ -285,35 +334,69 @@ const Addcoure = () => {
           {/* <button type="submit">click me</button> */}
         </Form.Item>
       </Form>
-      <Modal
-        title={<span className="text-green-500">Thêm khóa học thành công</span>}
-        open={isModalOpen}
-        onOk={handleOk}
-        destroyOnClose
-        closable={false}
-        footer={[
+      {errThemKhoaHoc || errUploadHinhAnhCapNhat ? (
+        <Modal
+          title={<span className="text-red-500">Thêm khóa học thất bại</span>}
+          open={isModalOpenErr}
+          onOk={handleOkErr}
+          destroyOnClose
+          closable={false}
+          footer={[
+            <div className="text-center">
+              <button
+                type="button"
+                className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg  text-sm px-5 py-2.5 text-center mr-2 mb-2"
+                onClick={handleOkErr}
+              >
+                OK
+              </button>
+            </div>,
+          ]}
+        >
           <div className="text-center">
-            <button
-              type="button"
-              className="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg  text-sm px-5 py-2.5 text-center mr-2 mb-2"
-              onClick={handleOk}
-            >
-              OK
-            </button>
-          </div>,
-        ]}
-      >
-        <div className="text-center">
-          <CheckCircleFilled
-            className="text-4xl mb-2 text-green-500"
-            style={{ color: "rgb(34 197 94) " }}
-          />
-          <br />
-          <p className="uppercase text-green-500 font-bold text-3xl">
-            THêm khóa học thành công!
-          </p>
-        </div>
-      </Modal>
+            <CloseCircleFilled
+              className="text-4xl mb-2 text-red-500"
+              style={{ color: "rgb(239 68 68) " }}
+            />
+            <br />
+            <p className="uppercase text-red-500 font-bold text-3xl">
+              {errThemKhoaHoc || errUploadHinhAnhCapNhat}
+            </p>
+          </div>
+        </Modal>
+      ) : (
+        <Modal
+          title={
+            <span className="text-green-500">Thêm khóa học thành công</span>
+          }
+          open={isModalOpen}
+          onOk={handleOk}
+          destroyOnClose
+          closable={false}
+          footer={[
+            <div className="text-center">
+              <button
+                type="button"
+                className="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg  text-sm px-5 py-2.5 text-center mr-2 mb-2"
+                onClick={handleOk}
+              >
+                OK
+              </button>
+            </div>,
+          ]}
+        >
+          <div className="text-center">
+            <CheckCircleFilled
+              className="text-4xl mb-2 text-green-500"
+              style={{ color: "rgb(34 197 94) " }}
+            />
+            <br />
+            <p className="uppercase text-green-500 font-bold text-3xl">
+              THêm khóa học thành công!
+            </p>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };

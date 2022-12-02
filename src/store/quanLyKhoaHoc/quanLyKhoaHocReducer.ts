@@ -41,6 +41,9 @@ interface InitialState {
   isFetchingCapNhapKhoaHoc: boolean;
   errCapNhatKhoaHoc: any;
   isFetchingThemKhoaHoc: boolean;
+
+  isFetchingUploadHinhAnhCapNhat: boolean;
+  errUploadHinhAnhCapNhat: any;
 }
 
 const initialState: InitialState = {
@@ -72,6 +75,9 @@ const initialState: InitialState = {
   errXoaKhoaHoc: "",
   isFetchingCapNhapKhoaHoc: false,
   errCapNhatKhoaHoc: "",
+
+  isFetchingUploadHinhAnhCapNhat: false,
+  errUploadHinhAnhCapNhat: "",
 };
 export const { reducer: quanLyKhoaHocReducer, actions: quanLyKhoaHocAction } =
   createSlice({
@@ -195,6 +201,18 @@ export const { reducer: quanLyKhoaHocReducer, actions: quanLyKhoaHocAction } =
         .addCase(themKhoaHocUploadHinh.rejected, (state, action) => {
           state.isFetchingThemKhoaHoc = false;
           state.errThemKhoaHoc = action.payload;
+        })
+        //upload hình khóa học
+        .addCase(uploadHinhAnhAction.pending, (state, action) => {
+          state.isFetchingUploadHinhAnhCapNhat = true;
+        })
+        .addCase(uploadHinhAnhAction.fulfilled, (state, action) => {
+          state.isFetchingUploadHinhAnhCapNhat = false;
+          state.errUploadHinhAnhCapNhat = "";
+        })
+        .addCase(uploadHinhAnhAction.rejected, (state, action) => {
+          state.isFetchingUploadHinhAnhCapNhat = false;
+          state.errUploadHinhAnhCapNhat = action.payload;
         });
     },
   });
@@ -331,6 +349,19 @@ export const xoaKhoaHoc = createAsyncThunk(
       const result = await quanLyKhoaHocService.xoaKhoaHoc(maKhoaHoc);
       dispatch(layDanhSachKhoaHoc(""));
       return result.data.content;
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const uploadHinhAnhAction = createAsyncThunk(
+  "quanLyKhoaHoc/uploadHinhAnh",
+  async (formData: FormData, { dispatch, rejectWithValue }) => {
+    try {
+      const result = await quanLyKhoaHocService.uploadHinhAnhKhoaHoc(formData);
+      dispatch(layDanhSachKhoaHoc(""));
+      return result.data;
     } catch (err: any) {
       return rejectWithValue(err.response.data);
     }
