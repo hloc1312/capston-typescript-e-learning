@@ -8,9 +8,10 @@ import Addcoure from "../pages/Coures/AddCourse/Addcourse";
 import Courses from "../pages/Coures/Courses";
 import EditCourse from "../pages/Coures/EditCourse/Editcourse";
 import CourseList from "../pages/CourseList/CourseList";
+import DangNhap from "../pages/DangNhap/DangNhap";
 import Detail from "../pages/Detail/Detail";
 import Home from "../pages/Home/Home";
-import Login from "../pages/Login/Login";
+// import Login from "../pages/Login/Login";
 
 import News from "../pages/News/News";
 import Profile from "../pages/Profile/Profile";
@@ -107,7 +108,7 @@ const Routers = () => {
       children: [
         {
           path: "login",
-          element: <Login />, // login
+          element: <DangNhap />, // login
         },
         // {
         //   path: "register",
