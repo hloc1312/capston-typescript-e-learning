@@ -5,6 +5,7 @@ import {
   arrDanhSachNguoiDung,
   CapNhatNguoiDung,
   CapNhatThongTinNguoiDung,
+  DangKyNguoiDung,
   DanhSachNguoiDung,
   ThemNguoiDung,
   ThongTinTaiKhoan,
@@ -197,31 +198,20 @@ export const {
       .addCase(capNhatNguoiDungAdmin.rejected, (state, action) => {
         state.isFetchingCapNhatAdmin = false;
         state.errCapNhatAdmin = action.payload;
+      })
+      // đăng ký người dùng
+      .addCase(dangKyAction.pending, (state, action) => {
+        state.isFetchingRegister = true;
+      })
+      .addCase(dangKyAction.fulfilled, (state, action) => {
+        state.isFetchingRegister = false;
+        state.errRegister = "";
+      })
+      .addCase(dangKyAction.rejected, (state, action) => {
+        state.isFetchingRegister = false;
+        state.errRegister = action.payload;
       });
   },
-  //     initialState,
-  //   name: "quanLyNguoiDung",
-  //   reducers: {},
-  //   extraReducers: (builder) => {
-  //     builder
-  //       .addCase(userLogin.pending, (state, action) => {
-  //         state.isFetching = true;
-  //       })
-  //       .addCase(userLogin.fulfilled, (state, action) => {
-  //         const thongTinDangNhap = action.payload;
-  //         localStorage.setItem(USER_LOGIN, JSON.stringify(thongTinDangNhap));
-  //         localStorage.setItem(
-  //           TOKEN,
-  //           JSON.stringify(action.payload?.accessToken)
-  //         );
-  //         state.isFetching = false;
-  //         state.user = action.payload;
-  //         state.err = "";
-  //       })
-  //       .addCase(userLogin.rejected, (state, action) => {
-  //         state.isFetching = false;
-  //         state.err = action.payload;
-  //       })
 });
 export const userLogin = createAsyncThunk(
   "quanLyNguoiDung/userLogin",
@@ -323,6 +313,18 @@ export const timKiemNguoiDungAcTion = createAsyncThunk(
   async (data: string, { rejectWithValue }) => {
     try {
       const result = await quanLyNguoiDungService.timKiemNguoiDung(data);
+      return result.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response);
+    }
+  }
+);
+
+export const dangKyAction = createAsyncThunk(
+  "quanLyNguoiDung/dangKy",
+  async (data: DangKyNguoiDung, { rejectWithValue }) => {
+    try {
+      const result = await quanLyNguoiDungService.dangKy(data);
       return result.data;
     } catch (err: any) {
       return rejectWithValue(err.response);

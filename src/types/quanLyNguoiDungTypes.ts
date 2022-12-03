@@ -91,3 +91,12 @@ export interface DanhSachNguoiDung {
   maLoaiNguoiDung: string;
   tenLoaiNguoiDung: string;
 }
+
+export interface DangKyNguoiDung {
+  taiKhoan: string;
+  matKhau: string;
+  hoTen: string;
+  soDT: string;
+  maNhom: string;
+  email: string;
+}
