@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { quanLyKhoaHocService } from "../../services/quanLyKhoaHocService";
 import {
+  CapNhatKhoaHoc,
   DangKyKhoaHoc,
   HuyGhiDanh,
   LayDanhMucKhoaHoc,
@@ -307,17 +308,7 @@ export const huyGhiDanhAction = createAsyncThunk(
     }
   }
 );
-// export const getListCourse=createAsyncThunk(
-//   "quanLyKhoaHoc/getListCourse",
-//   async (tenKhoaHoc: string, { dispatch, getState, rejectWithValue }) => {
-//     try {
-//       const result = await quanLyKhoaHocService.layDanhSachKhoaHoc(tenKhoaHoc);
-//       return result.data.content;
-//     } catch (err: any) {
-//       return rejectWithValue(err.response.data);
-//     }
-//   }
-// )
+
 export const themKhoaHocUploadHinh = createAsyncThunk(
   "quanLyKhoaHoc/themKhoaHocUploadHinh",
   async (formData: ThemKhoaHoc, { rejectWithValue }) => {
@@ -331,11 +322,11 @@ export const themKhoaHocUploadHinh = createAsyncThunk(
 );
 export const capNhatKhoaHocUpload = createAsyncThunk(
   "quanLyKhoaHoc/capNhatKhoaHocUpload",
-  async (formData: FormData, { dispatch, rejectWithValue }) => {
+  async (formData: CapNhatKhoaHoc, { dispatch, rejectWithValue }) => {
     try {
       const result = await quanLyKhoaHocService.capNhatKhoaHocUpload(formData);
       await dispatch(layDanhSachKhoaHoc(""));
-      return result.data.content;
+      return result.data;
     } catch (err: any) {
       return rejectWithValue(err.response.data);
     }
