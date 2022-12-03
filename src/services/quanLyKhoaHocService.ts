@@ -1,5 +1,6 @@
 import { api } from "../constants/api";
 import {
+  CapNhatKhoaHoc,
   DangKyKhoaHoc,
   HuyGhiDanh,
   ThemKhoaHoc,
@@ -49,8 +50,8 @@ export const quanLyKhoaHocService = {
   themKhoaHocUploadHinh: (formData: ThemKhoaHoc) => {
     return api.post(`QuanLyKhoaHoc/ThemKhoaHoc`, formData);
   },
-  capNhatKhoaHocUpload: (formData: FormData) => {
-    return api.post(`QuanLyKhoaHoc/CapNhatKhoaHocUpload`, formData);
+  capNhatKhoaHocUpload: (formData: CapNhatKhoaHoc) => {
+    return api.put(`QuanLyKhoaHoc/CapNhatKhoaHoc`, formData);
   },
 
   uploadHinhAnhKhoaHoc: (formData: FormData) => {

@@ -17,7 +17,10 @@ import {
 import { Input, Space } from "antd";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispath } from "../../store/configStore";
-import { layDanhSachKhoaHoc, xoaKhoaHoc } from "../../store/quanLyKhoaHoc/quanLyKhoaHocReducer";
+import {
+  layDanhSachKhoaHoc,
+  xoaKhoaHoc,
+} from "../../store/quanLyKhoaHoc/quanLyKhoaHocReducer";
 // import noImages from "../../assets/images/noImages.jpg";
 import { NavLink, useNavigate } from "react-router-dom";
 
@@ -54,24 +57,24 @@ const Courses = () => {
   const handleOk = () => {
     setIsModalOpen(false);
     dispatch(xoaKhoaHoc(findMaKhoaHoc?.maKhoaHoc as string));
-  };  
+  };
 
   const handleCancel = () => {
     setIsModalOpen(false);
   };
-  const [maKhoaHocDelete, setMaKhoaHocDelete] = useState('');
-  const {danhSachKhoaHoc} = useSelector((state: RootState) => {
+  const [maKhoaHocDelete, setMaKhoaHocDelete] = useState("");
+  const { danhSachKhoaHoc } = useSelector((state: RootState) => {
     return state.quanLyKhoaHocReducer;
   });
 
-
-  const findMaKhoaHoc = danhSachKhoaHoc?.find((item) => item.maKhoaHoc === maKhoaHocDelete);
+  const findMaKhoaHoc = danhSachKhoaHoc?.find(
+    (item) => item.maKhoaHoc === maKhoaHocDelete
+  );
 
   const dispatch = useAppDispath();
   const { Search } = Input;
-  const onSearch = (value: string) =>  {
+  const onSearch = (value: string) => {
     dispatch(layDanhSachKhoaHoc(value));
-    
   };
   const columns: ColumnsType<DataType> = [
     {
@@ -140,7 +143,7 @@ const Courses = () => {
       },
       width: "25%",
     },
-  {
+    {
       title: "",
       dataIndex: "maKhoaHoc",
 
@@ -158,7 +161,9 @@ const Courses = () => {
               className="focus:outline-none text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-3 mr-2 dark:focus:ring-red-900"
               onClick={() => {
                 showModal();
-                setMaKhoaHocDelete(course.maKhoaHoc);
+                // setMaKhoaHocDelete(course.maKhoaHoc);
+                alert(course.maKhoaHoc);
+                dispatch(xoaKhoaHoc(course.maKhoaHoc));
               }}
             >
               <DeleteOutlined className="text-2xl" />

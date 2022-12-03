@@ -253,8 +253,8 @@ export const xoaNguoiDung = createAsyncThunk(
   async (taiKhoan: string, { dispatch, rejectWithValue }) => {
     try {
       const result = await quanLyNguoiDungService.xoaNguoiDung(taiKhoan);
-      dispatch(danhSachNguoiDungAction(""));
-      return result.data.content;
+      dispatch(timKiemNguoiDungAcTion(""));
+      return result.data;
     } catch (err: any) {
       return rejectWithValue(err.response.data);
     }
