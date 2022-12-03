@@ -5,6 +5,7 @@ import {
   UserLogin,
   CapNhatNguoiDung,
   CapNhatThongTinNguoiDung,
+  DangKyNguoiDung,
 } from "../types/quanLyNguoiDungTypes";
 import { GROUPID } from "../utils/config";
 
@@ -59,5 +60,9 @@ export const quanLyNguoiDungService = {
     return api.get(
       `QuanLyNguoiDung/TimKiemNguoiDung?MaNhom=${GROUPID}&tuKhoa=${tenNguoiDung}`
     );
+  },
+
+  dangKy: (dangKy: DangKyNguoiDung) => {
+    return api.post(`QuanLyNguoiDung/DangKy`, dangKy);
   },
 };
